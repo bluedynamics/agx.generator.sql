@@ -1,0 +1,4 @@
+*.pyc
+*.pyo
+src/agx.generator.sql.egg-info
+src/agx/generator/sql/tests/data/agx.generator.sql-sample
