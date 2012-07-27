@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:pyegg="http:///schemas/pyegg/_m3LEwPJqEeC2FJWWHfGcuA/17" xmlns:uml="http://www.eclipse.org/uml2/3.0.0/UML" xsi:schemaLocation="http:///schemas/pyegg/_m3LEwPJqEeC2FJWWHfGcuA/17 uml_profiles/pyegg.profile.uml#_m3OIEPJqEeC2FJWWHfGcuA">
+  <uml:Model xmi:id="_rxHwYFyQEeG1mLF7jMwarw" name="model">
+    <packagedElement xmi:type="uml:Package" xmi:id="_0vR-MFyQEeG1mLF7jMwarw" name="agx.generator.sql">
+      <packagedElement xmi:type="uml:Package" xmi:id="_zl2RQNewEeGgbbtOgTBdsg" name="profiles">
+        <packagedElement xmi:type="uml:Class" xmi:id="_7j3QsNewEeGgbbtOgTBdsg" name="ProfileLocation" clientDependency="_tdBm8NeyEeGgbbtOgTBdsg">
+          <interfaceRealization xmi:id="_tdBm8NeyEeGgbbtOgTBdsg" name="" supplier="_iwYeENeyEeGgbbtOgTBdsg" client="_7j3QsNewEeGgbbtOgTBdsg" contract="_iwYeENeyEeGgbbtOgTBdsg"/>
+        </packagedElement>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Package" xmi:id="_IZUgMNexEeGgbbtOgTBdsg" name="scope"/>
+      <packagedElement xmi:type="uml:Package" xmi:id="_TFwNsNexEeGgbbtOgTBdsg" name="generator"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Interface" xmi:id="_iwYeENeyEeGgbbtOgTBdsg" name="IProfileLocation"/>
+    <profileApplication xmi:id="_zZ1OMFyQEeG1mLF7jMwarw">
+      <eAnnotations xmi:id="_zaNBoFyQEeG1mLF7jMwarw" source="http://www.eclipse.org/uml2/2.0.0/UML">
+        <references xmi:type="ecore:EPackage" href="uml_profiles/pyegg.profile.uml#_m3OIEPJqEeC2FJWWHfGcuA"/>
+      </eAnnotations>
+      <appliedProfile href="uml_profiles/pyegg.profile.uml#_HHBJsNqqEd6cif0axL0c4w"/>
+    </profileApplication>
+    <profileApplication xmi:id="_ZkXacNeyEeGgbbtOgTBdsg">
+      <eAnnotations xmi:id="_ZldmoNeyEeGgbbtOgTBdsg" source="http://www.eclipse.org/uml2/2.0.0/UML">
+        <references xmi:type="ecore:EPackage" href="uml_profiles/zca.profile.uml#_DzAcsMU3EeGultIg_buOPQ"/>
+      </eAnnotations>
+      <appliedProfile href="uml_profiles/zca.profile.uml#_gTeSUL-VEeCXSLIizrgdww"/>
+    </profileApplication>
+  </uml:Model>
+  <pyegg:pyegg xmi:id="_3P7WAFyQEeG1mLF7jMwarw" base_Package="_0vR-MFyQEeG1mLF7jMwarw"/>
+  <pyegg:pymodule xmi:id="_28CxANewEeGgbbtOgTBdsg" base_Package="_zl2RQNewEeGgbbtOgTBdsg"/>
+  <pyegg:pymodule xmi:id="_U4evkNexEeGgbbtOgTBdsg" base_Package="_TFwNsNexEeGgbbtOgTBdsg"/>
+  <pyegg:pymodule xmi:id="_WsK6wNexEeGgbbtOgTBdsg" base_Package="_IZUgMNexEeGgbbtOgTBdsg"/>
+  <pyegg:stub xmi:id="_mZaaQNeyEeGgbbtOgTBdsg" import="agx.core.interfaces" base_Interface="_iwYeENeyEeGgbbtOgTBdsg"/>
+</xmi:XMI>

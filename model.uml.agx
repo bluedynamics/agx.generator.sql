@@ -1,0 +1,5 @@
+#---AGX Properties---
+#Fri Jul 27 08:13:25 CEST 2012
+profiles=pyegg;zca
+target=/home/phil/dev/projects/agx.generator.sql
+generator=/home/phil/dev/projects/agx.dev/bin/agx
