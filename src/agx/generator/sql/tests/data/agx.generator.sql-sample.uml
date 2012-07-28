@@ -16,9 +16,6 @@
           <ownedAttribute xmi:id="_BZkOoNhHEeG3YaatKuZj6A" name="lastname">
             <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
           </ownedAttribute>
-          <ownedAttribute xmi:id="_j0vz8NhIEeG3YaatKuZj6A" name="birthdate">
-            <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/XMLPrimitiveTypes.library.uml#DateTime"/>
-          </ownedAttribute>
           <ownedAttribute xmi:id="__-mwENiUEeG3YaatKuZj6A" name="addresses" type="_pgBqMNiUEeG3YaatKuZj6A" association="__-nXINiUEeG3YaatKuZj6A">
             <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="__-mwEdiUEeG3YaatKuZj6A" value="*"/>
             <lowerValue xmi:type="uml:LiteralInteger" xmi:id="__-mwEtiUEeG3YaatKuZj6A"/>

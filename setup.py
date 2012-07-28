@@ -26,6 +26,7 @@ setup(name="agx.generator.sql",
       zip_safe=False,
       install_requires=[
           'setuptools',
+          'interlude', 
           'plone.app.dexterity',
           ##code-section dependencies
           ##/code-section dependencies

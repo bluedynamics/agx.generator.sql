@@ -65,10 +65,6 @@
                 <element xmi:type="uml:Property" href="agx.generator.sql-sample.uml#_BZkOoNhHEeG3YaatKuZj6A"/>
                 <layoutConstraint xmi:type="notation:Location" xmi:id="_BZmD0dhHEeG3YaatKuZj6A"/>
               </children>
-              <children xmi:type="notation:Shape" xmi:id="_j0yQMNhIEeG3YaatKuZj6A" type="3012" fontName="Ubuntu" fontHeight="11" lineColor="0">
-                <element xmi:type="uml:Property" href="agx.generator.sql-sample.uml#_j0vz8NhIEeG3YaatKuZj6A"/>
-                <layoutConstraint xmi:type="notation:Location" xmi:id="_j0yQMdhIEeG3YaatKuZj6A"/>
-              </children>
               <styles xmi:type="notation:TitleStyle" xmi:id="_zNyFZthGEeG3YaatKuZj6A"/>
               <styles xmi:type="notation:SortingStyle" xmi:id="_zNyFZ9hGEeG3YaatKuZj6A"/>
               <styles xmi:type="notation:FilteringStyle" xmi:id="_zNyFaNhGEeG3YaatKuZj6A"/>

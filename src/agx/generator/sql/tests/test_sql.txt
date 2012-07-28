@@ -24,6 +24,10 @@ Setup configuration and emulate main routine.
     >>> subpath = 'profiles/zca.profile.uml'
     >>> zcaprofilepath = \
     ...     pkg_resources.resource_filename('agx.generator.zca', subpath)
+
+    >>> subpath = 'profiles/sql.profile.uml'
+    >>> sqlprofilepath = \
+    ...     pkg_resources.resource_filename('agx.generator.sql', subpath)
     
     >>> modelpaths = [modelpath, eggprofilepath, zcaprofilepath, sqlprofilepath]
     

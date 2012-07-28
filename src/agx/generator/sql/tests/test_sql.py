@@ -6,7 +6,7 @@ import unittest
 import doctest
 import zope.component
 from pprint import pprint
-from interlude import interact
+#from interlude import interact
 
 optionflags = doctest.NORMALIZE_WHITESPACE | \
               doctest.ELLIPSIS | \
@@ -23,7 +23,8 @@ def test_suite():
         doctest.DocFileSuite(
             file, 
             optionflags=optionflags,
-            globs={'interact': interact,
+            globs={
+#                   'interact': interact,
                    'pprint': pprint,
                    'datadir': datadir},
         ) for file in TESTFILES
