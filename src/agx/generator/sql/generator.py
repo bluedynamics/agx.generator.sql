@@ -84,10 +84,21 @@ def sqlcontentclass(self, source, target):
 def pyattribute(self, source, target):
     """Create Attribute.
     """
-    
     if source.parent.stereotype('sql:sql_content') is None:
         return
-    
+
+    options={}
+
+    if source.stereotype('sql:primary'):
+        options['primary_key']=True
+            
     targetatt = read_target_node(source, target.target)
-    targetatt.value='Column(%s)' % source.type.name
+    if options:
+        oparray=[]
+        for k in options:
+            oparray.append('%s = %s' %(k,repr(options[k])))
+        targetatt.value='Column(%s,%s)' % (source.type.name,', '.join(oparray))
+    else:
+        targetatt.value='Column(%s)' % source.type.name
+        
 #    import pdb;pdb.set_trace()

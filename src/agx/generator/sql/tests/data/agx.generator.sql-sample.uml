@@ -20,6 +20,9 @@
             <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="__-mwEdiUEeG3YaatKuZj6A" value="*"/>
             <lowerValue xmi:type="uml:LiteralInteger" xmi:id="__-mwEtiUEeG3YaatKuZj6A"/>
           </ownedAttribute>
+          <ownedAttribute xmi:id="_EIQSsNlpEeG3YaatKuZj6A" name="id">
+            <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+          </ownedAttribute>
         </packagedElement>
         <packagedElement xmi:type="uml:Class" xmi:id="_pgBqMNiUEeG3YaatKuZj6A" name="Address">
           <ownedAttribute xmi:id="_r6jy8NiUEeG3YaatKuZj6A" name="street">
@@ -33,6 +36,9 @@
           </ownedAttribute>
           <ownedAttribute xmi:id="_4H_ZINiUEeG3YaatKuZj6A" name="zip">
             <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+          </ownedAttribute>
+          <ownedAttribute xmi:id="_eKsg4NlpEeG3YaatKuZj6A" name="id">
+            <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
           </ownedAttribute>
         </packagedElement>
         <packagedElement xmi:type="uml:Association" xmi:id="__-nXINiUEeG3YaatKuZj6A" name="person_address_1" memberEnd="__-nXIdiUEeG3YaatKuZj6A __-mwENiUEeG3YaatKuZj6A">
@@ -66,4 +72,6 @@
   <sql:sql_content xmi:id="_7mWS0NhGEeG3YaatKuZj6A" base_Class="_zNNdoNhGEeG3YaatKuZj6A"/>
   <sql:sql_content xmi:id="_9hDIgNiUEeG3YaatKuZj6A" base_Class="_pgBqMNiUEeG3YaatKuZj6A"/>
   <sql:sql_content xmi:id="_uWIIINkxEeG3YaatKuZj6A" base_Class="_oEaScNkxEeG3YaatKuZj6A"/>
+  <sql:primary xmi:id="_IReK0NlpEeG3YaatKuZj6A" base_Property="_EIQSsNlpEeG3YaatKuZj6A"/>
+  <sql:primary xmi:id="_iTwA8NlpEeG3YaatKuZj6A" base_Property="_eKsg4NlpEeG3YaatKuZj6A"/>
 </xmi:XMI>

@@ -65,6 +65,17 @@
                 <element xmi:type="uml:Property" href="agx.generator.sql-sample.uml#_BZkOoNhHEeG3YaatKuZj6A"/>
                 <layoutConstraint xmi:type="notation:Location" xmi:id="_BZmD0dhHEeG3YaatKuZj6A"/>
               </children>
+              <children xmi:type="notation:Shape" xmi:id="_EISH4NlpEeG3YaatKuZj6A" type="3012" fontName="Ubuntu" fontHeight="11" lineColor="0">
+                <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_IRnUwNlpEeG3YaatKuZj6A" source="Stereotype_Annotation">
+                  <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_IRnUwdlpEeG3YaatKuZj6A" key="StereotypeWithQualifiedNameList" value=""/>
+                  <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_IRn70NlpEeG3YaatKuZj6A" key="StereotypeList" value="sql::primary"/>
+                  <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_IRn70dlpEeG3YaatKuZj6A" key="Stereotype_Presentation_Kind" value="HorizontalStereo"/>
+                  <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_IRn70tlpEeG3YaatKuZj6A" key="PropStereoDisplay" value=""/>
+                  <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_IRn709lpEeG3YaatKuZj6A" key="StereotypePropertyLocation" value="Compartment"/>
+                </eAnnotations>
+                <element xmi:type="uml:Property" href="agx.generator.sql-sample.uml#_EIQSsNlpEeG3YaatKuZj6A"/>
+                <layoutConstraint xmi:type="notation:Location" xmi:id="_EISH4dlpEeG3YaatKuZj6A"/>
+              </children>
               <styles xmi:type="notation:TitleStyle" xmi:id="_zNyFZthGEeG3YaatKuZj6A"/>
               <styles xmi:type="notation:SortingStyle" xmi:id="_zNyFZ9hGEeG3YaatKuZj6A"/>
               <styles xmi:type="notation:FilteringStyle" xmi:id="_zNyFaNhGEeG3YaatKuZj6A"/>
@@ -120,6 +131,17 @@
                 <element xmi:type="uml:Property" href="agx.generator.sql-sample.uml#_4H_ZINiUEeG3YaatKuZj6A"/>
                 <layoutConstraint xmi:type="notation:Location" xmi:id="_4IBOUdiUEeG3YaatKuZj6A"/>
               </children>
+              <children xmi:type="notation:Shape" xmi:id="_eKu9INlpEeG3YaatKuZj6A" type="3012" fontName="Ubuntu" fontHeight="11" lineColor="0">
+                <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_iT7AENlpEeG3YaatKuZj6A" source="Stereotype_Annotation">
+                  <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_iT7AEdlpEeG3YaatKuZj6A" key="StereotypeWithQualifiedNameList" value=""/>
+                  <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_iT7AEtlpEeG3YaatKuZj6A" key="StereotypeList" value="sql::primary"/>
+                  <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_iT7AE9lpEeG3YaatKuZj6A" key="Stereotype_Presentation_Kind" value="HorizontalStereo"/>
+                  <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_iT7AFNlpEeG3YaatKuZj6A" key="PropStereoDisplay" value=""/>
+                  <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_iT7AFdlpEeG3YaatKuZj6A" key="StereotypePropertyLocation" value="Compartment"/>
+                </eAnnotations>
+                <element xmi:type="uml:Property" href="agx.generator.sql-sample.uml#_eKsg4NlpEeG3YaatKuZj6A"/>
+                <layoutConstraint xmi:type="notation:Location" xmi:id="_eKu9IdlpEeG3YaatKuZj6A"/>
+              </children>
               <styles xmi:type="notation:TitleStyle" xmi:id="_pgFUktiUEeG3YaatKuZj6A"/>
               <styles xmi:type="notation:SortingStyle" xmi:id="_pgFUk9iUEeG3YaatKuZj6A"/>
               <styles xmi:type="notation:FilteringStyle" xmi:id="_pgFUlNiUEeG3YaatKuZj6A"/>
@@ -138,7 +160,7 @@
               <layoutConstraint xmi:type="notation:Bounds" xmi:id="_pgFUn9iUEeG3YaatKuZj6A"/>
             </children>
             <element xmi:type="uml:Class" href="agx.generator.sql-sample.uml#_pgBqMNiUEeG3YaatKuZj6A"/>
-            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_pgEtgdiUEeG3YaatKuZj6A" x="425" y="13" width="191" height="166"/>
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_pgEtgdiUEeG3YaatKuZj6A" x="385" y="8" width="191" height="186"/>
           </children>
           <styles xmi:type="notation:TitleStyle" xmi:id="_YgkSKdgVEeGgbbtOgTBdsg"/>
           <layoutConstraint xmi:type="notation:Bounds" xmi:id="_YgkSKtgVEeGgbbtOgTBdsg"/>
@@ -217,7 +239,7 @@
     </children>
     <styles xmi:type="notation:FontStyle" xmi:id="__-qacdiUEeG3YaatKuZj6A" fontName="Ubuntu" fontHeight="11"/>
     <element xmi:type="uml:Association" href="agx.generator.sql-sample.uml#__-nXINiUEeG3YaatKuZj6A"/>
-    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="__-qactiUEeG3YaatKuZj6A" points="[29, 7, -186, 0]$[63, 7, -152, 0]$[133, 7, -82, 0]$[213, 7, -2, 0]"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="__-qactiUEeG3YaatKuZj6A" points="[43, 3, -221, -18]$[262, 21, -2, 0]"/>
     <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="___sVMNiUEeG3YaatKuZj6A" id="(0.7786259541984732,0.5572139303482587)"/>
     <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_ECL6QNiVEeG3YaatKuZj6A" id="(0.010471204188481676,0.7168674698795181)"/>
   </edges>
