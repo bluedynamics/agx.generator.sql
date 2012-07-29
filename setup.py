@@ -27,12 +27,16 @@ setup(name="agx.generator.sql",
       install_requires=[
           'setuptools',
           'interlude', 
-          'plone.app.dexterity',
+          'agx.generator.pyegg',
           ##code-section dependencies
           ##/code-section dependencies
       ],
       extras_require = dict(
           ##code-section extras_require
+          test=[
+            'interlude',
+          ]
+
           ##/code-section extras_require
       ),
       entry_points="""

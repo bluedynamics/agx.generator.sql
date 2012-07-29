@@ -55,28 +55,29 @@ def sqlcontentclass(self, source, target):
                            ['String',None],
                            ['ForeignKey',None]])
     
-    #find first class and do some assignments before
+    #find last import and do some assignments afterwards
     lastimport=[imp for imp in module.filtereditems(IImport)][-1]
     globalatts=[att for att in module.filtereditems(IAttribute)]
     classatts=[att for att in targetclass.filtereditems(IAttribute)]
-#    import pdb;pdb.set_trace()
+
+    #generate the Base=declarative_base() statement
     att=Attribute(['Base'],'declarative_base()')
     att.__name__='Base'
-    
     if not [a for a in globalatts if a.targets==['Base']]:
         module.insertafter(att,lastimport)
         
+    #generate the __tablename__ attribute
     if not [a for a in classatts if a.targets==['__tablename__']]:
         tablename=Attribute(['__tablename__'],"'%s'" % (source.name.lower()))
         tablename.__name__='__tablename__'
-#        import pdb;pdb.set_trace()
         targetclass.insertfirst(tablename)
     
+    #lets inherit from Base
     if targetclass.bases==['object']:
         targetclass.bases=['Base']
     else:
         if 'Base' not in targetclass.bases:
-            targetclass.insert(0,'Base')
+            targetclass.bases.insert(0,'Base')
     
 
 @handler('sqlattribute', 'uml2fs', 'hierarchygenerator', 'pyattribute', order=41)
