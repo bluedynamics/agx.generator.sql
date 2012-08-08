@@ -14,4 +14,4 @@ class SqlTableScope(Scope):
 class SqlSAConfigScope(Scope):
 
     def __call__(self, node):
-        return node.stereotype('sql:sql_config') is not None
+        return node.stereotype('sql:z3c_saconfig') is not None

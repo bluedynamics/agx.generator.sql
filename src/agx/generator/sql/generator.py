@@ -72,14 +72,10 @@ def sqlcontentclass(self, source, target):
                            ['Integer',None],
                            ['String',None],
                            ['ForeignKey',None]])
-    imps.set('z3c.saconfig.interfaces',[['IEngineCreatedEvent',None]])
-    imps.set('zope',[['component',None]])
     
     #find last import and do some assignments afterwards
     lastimport=[imp for imp in module.filtereditems(IImport)][-1]
     globalatts=[att for att in module.filtereditems(IAttribute)]
-    globalfuncs=[f for f in module.filtereditems(IFunction)]
-    globalfuncnames=[f.functionname for f in globalfuncs]
     classatts=[att for att in targetclass.filtereditems(IAttribute)]
 
     #generate the Base=declarative_base() statement
@@ -88,30 +84,6 @@ def sqlcontentclass(self, source, target):
     if not [a for a in globalatts if a.targets==['Base']]:
         module.insertafter(att,lastimport)
         
-
-    #add engine created handler
-    if 'engineCreatedHandler' not in globalfuncnames:
-        att=[att for att in module.filtereditems(IAttribute) if att.targets==['Base']][0]
-        ff=Function('engineCreatedHandler')
-    #    ff=Attribute(['Base1'],'1')
-        ff.__name__=ff.uuid #'engineCreatedHandler'
-        ff.args=('event',)
-        dec=Decorator('component.adapter')
-        dec.__name__=dec.uuid
-        dec.args=('IEngineCreatedEvent',)
-        ff.insertfirst(dec)
-        block=Block('Base.metadata.create_all(event.engine)')
-        block.__name__=block.uuid
-        ff.insertlast(block)
-        module.insertafter(ff,att)
-        
-        prov=Block('component.provideHandler(engineCreatedHandler)')
-        prov.__name__=prov.uuid
-        module.insertafter(prov,ff)
-
-    
-    
-    
     #generate the __tablename__ attribute
     if not [a for a in classatts if a.targets==['__tablename__']]:
         tablename=Attribute(['__tablename__'],"'%s'" % (source.name.lower()))
@@ -124,7 +96,48 @@ def sqlcontentclass(self, source, target):
     else:
         if 'Base' not in targetclass.bases:
             targetclass.bases.insert(0,'Base')
+
+@handler('sqlcontentclass_engine_created_handler', 'uml2fs', 'connectorgenerator',
+         'sqlcontent', order=11)
+def sqlcontentclass_engine_created_handler(self, source, target):
+    '''create and register the handler for the IEngineCreatedEvent'''
+    targetclass = read_target_node(source, target.target)
+    module=targetclass.parent
+    imps=Imports(module)
     
+    #check if one of the parent packages has the z3c_saconfig stereotype
+#    import pdb;pdb.set_trace()
+    has_z3c_saconfig=False
+    par=source.parent
+    while par:
+        if par.stereotype('sql:z3c_saconfig'):
+            has_z3c_saconfig=True
+        par=par.parent
+    #add engine created handler
+    if has_z3c_saconfig:
+        globalfuncs=[f for f in module.filtereditems(IFunction)]
+        globalfuncnames=[f.functionname for f in globalfuncs]
+        if 'engineCreatedHandler' not in globalfuncnames:
+            
+            imps.set('z3c.saconfig.interfaces',[['IEngineCreatedEvent',None]])
+            imps.set('zope',[['component',None]])
+            
+            att=[att for att in module.filtereditems(IAttribute) if att.targets==['Base']][0]
+            ff=Function('engineCreatedHandler')
+            ff.__name__=ff.uuid #'engineCreatedHandler'
+            ff.args=('event',)
+            dec=Decorator('component.adapter')
+            dec.__name__=dec.uuid
+            dec.args=('IEngineCreatedEvent',)
+            ff.insertfirst(dec)
+            block=Block('Base.metadata.create_all(event.engine)')
+            block.__name__=block.uuid
+            ff.insertlast(block)
+            module.insertafter(ff,att)
+            
+            prov=Block('component.provideHandler(engineCreatedHandler)')
+            prov.__name__=prov.uuid
+            module.insertafter(prov,ff)
     
 
 @handler('sqlattribute', 'uml2fs', 'hierarchygenerator', 'pyattribute', order=41)
@@ -163,15 +176,14 @@ def sql_config(self, source, target):
     tgv=TaggedValues(source)
 
 #    import pdb;pdb.set_trace()
-    engine_name=tgv.direct('engine_name','sql:sql_config','default')
-    engine_url=tgv.direct('engine_url','sql:sql_config','sqlite:///memory')
-    session_name=tgv.direct('session_name','sql:sql_config','default')
+    engine_name=tgv.direct('engine_name','sql:z3c_saconfig','default')
+    engine_url=tgv.direct('engine_url','sql:z3c_saconfig','sqlite:///memory')
+    session_name=tgv.direct('session_name','sql:z3c_saconfig','default')
 
     zcautils.set_zcml_directive(tg,'configure.zcml','include','package','z3c.saconfig',
                                 file='meta.zcml')
     zcautils.set_zcml_directive(tg,'configure.zcml','saconfig:engine','name',engine_name,url=engine_url)
     zcautils.set_zcml_directive(tg,'configure.zcml','saconfig:session','name',session_name,engine=engine_name)
-
 
     #write the readme
     fname='README-sqlalchemy.rst'
