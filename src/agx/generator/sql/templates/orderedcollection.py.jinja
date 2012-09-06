@@ -1,0 +1,29 @@
+# -*- coding: utf-8 -*-
+from sqlalchemy.util import OrderedDict
+from sqlalchemy.orm.collections import MappedCollection
+from sqlalchemy.orm.collections import _SerializableAttrGetter
+
+class OrderedMappedCollection(OrderedDict, MappedCollection):
+    """Holds 'Node' objects, keyed by the 'name' attribute with insert order maintained.
+    """
+
+    def __init__(self, getter):
+                MappedCollection.__init__(self, getter)
+                OrderedDict.__init__(self)
+
+def ordered_attribute_mapped_collection(attr_name):
+    """A dictionary-based collection type with attribute-based keying.
+    
+    Returns a :class:`.MappedCollection` factory with a keying based on the
+    attr_name' attribute of entities in the collection, where ``attr_name``
+    is the string name of the attribute.
+    
+    The key value must be immutable for the lifetime of the object.  You
+    can not, for example, map on foreign key values if those key values will
+    change during the session, i.e. from None to a database-assigned integer
+    after a session flush.
+    
+    """
+
+    getter = _SerializableAttrGetter(attr_name)
+    return lambda: OrderedMappedCollection(getter)

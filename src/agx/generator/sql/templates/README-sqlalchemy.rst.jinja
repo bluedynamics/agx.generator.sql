@@ -19,6 +19,6 @@ If you use the package standalone, do it this way:
     >>> from z3c.saconfig import named_scoped_session
     >>> Session = named_scoped_session('default')
     >>> session=Session()
-    >>> ss.add(Person(name='Donald Duck')) #assume we have a Person class
+    >>> session.add(Person(name='Donald Duck')) #assume we have a Person class
     
     >>> transaction.commit()

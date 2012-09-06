@@ -254,7 +254,7 @@
       <layoutConstraint xmi:type="notation:Bounds" xmi:id="_u_xY4_a7EeGKYYd2nu_Utw"/>
     </children>
     <element xmi:type="uml:Stereotype" href="sql.profile.uml#_u_uVkPa7EeGKYYd2nu_Utw"/>
-    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_u_wKwfa7EeGKYYd2nu_Utw" x="320" y="365"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_u_wKwfa7EeGKYYd2nu_Utw" x="305" y="365" width="125"/>
   </children>
   <children xmi:type="notation:Shape" xmi:id="_zgHXkPa7EeGKYYd2nu_Utw" type="1026" fontName="Ubuntu" lineColor="0">
     <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_zgH-oPa7EeGKYYd2nu_Utw" source="ShadowFigure">

@@ -215,6 +215,7 @@ def sqlrelations_relations(self, source, target):
 
     targetclass = read_target_node(source, target.target)
     module=targetclass.parent
+    directory=module.parent
     #get the last attribute and append there the relations
     attrs=targetclass.attributes()
     attrnames=[att.targets[0] for att in attrs]
@@ -241,24 +242,49 @@ def sqlrelations_relations(self, source, target):
             targetclass.insertafter(attr,lastattr)
             attr.targets=[relname]
             options={}
-            
             #collect options for relationship
             if otherend.aggregationkind=='composite':
                 options['cascade']="'all, delete-orphan'"
+            if assoc.stereotype('sql:ordered'):
+                order_by=tgv.direct('order_by', 'sql:ordered', None)
+                if not order_by:
+                    raise ValueError,'when setting a relation ordered you have to specify order_by!'
+                #if not prefixed, lets prefix it
+                if not '.' in order_by:
+                    order_by='%s.%s'%(otherclass.name,order_by)
+                options['order_by']="'%s'" % order_by
             if assoc.stereotype('sql:attribute_mapped'):
                 keyname=tgv.direct('key', 'sql:attribute_mapped', None)
                 if not keyname:
                     raise ValueError,'when defining attribute_mapped you have to specify a key'
-                options['collection_class']="attribute_mapped_collection('%s')" % keyname
-                
-                imps.set('sqlalchemy.orm.collections',[['attribute_mapped_collection',None]])
-            if relend.navigable:
-                options['backref']=targetclass.lower()
+                if assoc.stereotype('sql:ordered'):
+                    # support for ordered mapped collection
+                    # in this case we have to provide our own collection
+                    # see http://docs.sqlalchemy.org/en/rel_0_7/orm/collections.html,
+                    # secion 'Custom Dictionary-Based Collections'
+                    fname = 'orderedcollection.py'
+                    if fname not in directory:
+                        src = JinjaTemplate()
+                        src.template = templatepath(fname + '.jinja')
+                        src.params = {}
+                        directory[fname] = src
+                        
+                        #XXXso that emptymoduleremoval doesnt kick the template out
+                        #better would be that jinjatemplates dont get removed at all
+                        token('pymodules',True,modules=set()).modules.add(src)
+
+                    options['collection_class']="ordered_attribute_mapped_collection('%s')" % keyname
+                    imps.set('orderedcollection',[['ordered_attribute_mapped_collection',None]])
+                else: #unordered
+                    options['collection_class']="attribute_mapped_collection('%s')" % keyname
+                    imps.set('sqlalchemy.orm.collections',[['attribute_mapped_collection',None]])
+
+            if True or relend.navigable: #XXX .navigable isnt yet correctly parsed from uml, thus the hardcoding
+                options['backref']="'%s'" % relend.name.lower()
             if assoc.stereotype('sql:lazy'):
                 laziness=tgv.direct('laziness', 'sql:lazy', 'dynamic')
                 options['lazy']="'%s'" % laziness
 
-                
             #convert options into keyword params
             oparray = []
             for k in options:
