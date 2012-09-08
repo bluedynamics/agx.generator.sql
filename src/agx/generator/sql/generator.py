@@ -337,7 +337,7 @@ def pyattribute(self, source, target):
             oparray.append('%s = %s' % (k, options[k]))
         targetatt.value = 'Column(%s,%s)' % (typename, ', '.join(oparray))
     else:
-        targetatt.value = 'Column(%s)' % source.type.name
+        targetatt.value = 'Column(%s)' % typename
 
 
 @handler('sql_config', 'uml2fs', 'hierarchygenerator', 'sql_config', order=41)
