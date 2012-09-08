@@ -196,15 +196,25 @@ def sqlrelations_foreignkeys(self, source, target):
                 attr.targets=[fkname]
                 fk="ForeignKey('%s.%s')" % (otherclass.name.lower(),pk.name)
                 options={}
+                typename=pk.type.name
+                #handle custom types (PrimitveType)
+                if pk.type.stereotype('sql:sql_type'):
+                    tgv=TaggedValues(pk.type)
+                    typename=tgv.direct('classname','sql:sql_type',typename)
+                    import_from=tgv.direct('import_from','sql:sql_type',None)
+                    if import_from:
+                        imps=Imports(module)
+                        imps.set(import_from,[[typename,None]])
+                        
                 if relend.lowervalue:
-                    options['nullable']=False
+                    options['nullable']='False'
                 else:
-                    options['nullable']=True
+                    options['nullable']='True'
                     
                 oparray = []
                 for k in options:
-                    oparray.append('%s = %s' % (k, repr(options[k])))
-                attr.value = 'Column(%s, %s, %s)' % (pk.type.name, fk, ', '.join(oparray))
+                    oparray.append('%s = %s' % (k, options[k]))
+                attr.value = 'Column(%s, %s, %s)' % (typename, fk, ', '.join(oparray))
 
 @handler('sqlrelations_relations', 'uml2fs', 'connectorgenerator',
          'sqlcontent', order=9)
@@ -295,19 +305,37 @@ def sqlrelations_relations(self, source, target):
 def pyattribute(self, source, target):
     """Create Attribute.
     """
-#    if source.parent.stereotype('sql:sql_content') is None:
-#        return
+    klass=source.parent
+    if not klass.stereotype('sql:sql_content'):
+        return
+    targetclass= read_target_node(klass, target.target)
+    module=targetclass.parent
 
+    read_target_node(source, target.target)
+
+    typename=source.type.name
     options = {}
     if source.stereotype('sql:primary'):
-        options['primary_key'] = True
+        options['primary_key'] = 'True'
+        
+    # retrieve options if the primitive type has <<sql_type>>
+    if source.type.stereotype('sql:sql_type'):
+        tgv=TaggedValues(source.type)
+        typename=tgv.direct('classname','sql:sql_type',typename)
+        default=tgv.direct('default','sql:sql_type',None)
+        if default:
+            options['default']=default
+        import_from=tgv.direct('import_from','sql:sql_type',None)
+        if import_from:
+            imps=Imports(module)
+            imps.set(import_from,[[typename,None]])
 
     targetatt = read_target_node(source, target.target)
     if options:
         oparray = []
         for k in options:
-            oparray.append('%s = %s' % (k, repr(options[k])))
-        targetatt.value = 'Column(%s,%s)' % (source.type.name, ', '.join(oparray))
+            oparray.append('%s = %s' % (k, options[k]))
+        targetatt.value = 'Column(%s,%s)' % (typename, ', '.join(oparray))
     else:
         targetatt.value = 'Column(%s)' % source.type.name
 
