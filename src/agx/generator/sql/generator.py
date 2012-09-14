@@ -20,6 +20,7 @@ from node.ext.uml.interfaces import (
     IInterfaceRealization,
     IDependency,
     IProperty,
+    IAssociation,
 )
 from node.ext.python.utils import Imports
 
@@ -57,6 +58,7 @@ from agx.generator.sql.scope import SqlContentScope, SqlTableScope, SqlSAConfigS
 
 registerScope('sqlcontent', 'uml2fs', [IClass] , SqlContentScope)
 registerScope('sql_config', 'uml2fs', [IPackage] , SqlSAConfigScope)
+registerScope('sqlassociation', 'uml2fs', [IAssociation], Scope)
 
 def templatepath(name):
     return os.path.join(os.path.dirname(__file__), 'templates/%s' % name)
