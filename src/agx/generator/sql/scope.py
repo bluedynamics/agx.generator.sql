@@ -12,6 +12,12 @@ class SqlTablePerClassScope(Scope):
         return node.stereotype('sql:sql_content') is not None \
             and node.stereotype('sql:table_per_class_inheritance') is not None
 
+class SqlJoinedInheritanceScope(Scope):
+
+    def __call__(self, node):
+        return node.stereotype('sql:sql_content') is not None \
+            and node.stereotype('sql:joined_inheritance') is not None
+
 class SqlTableScope(Scope):
 
     def __call__(self, node):

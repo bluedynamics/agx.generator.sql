@@ -56,10 +56,11 @@ from node.ext.python import Import
 
 from agx.generator.zca import utils as zcautils
 from agx.generator.sql.scope import SqlContentScope, SqlTableScope, \
-    SqlSAConfigScope, SqlTablePerClassScope
+    SqlSAConfigScope, SqlTablePerClassScope, SqlJoinedInheritanceScope
 
 registerScope('sqlcontent', 'uml2fs', [IClass] , SqlContentScope)
 registerScope('sqltableperclassinheritance', 'uml2fs', [IClass] , SqlTablePerClassScope)
+registerScope('sqljoinedinheritance', 'uml2fs', [IClass] , SqlJoinedInheritanceScope)
 registerScope('sql_config', 'uml2fs', [IPackage] , SqlSAConfigScope)
 registerScope('sqlassociation', 'uml2fs', [IAssociation], Scope)
 
@@ -81,6 +82,26 @@ def get_pks(klass):
                     return res
     return res
 
+
+@handler('sqlcontentbaseclass', 'uml2fs', 'connectorgenerator',
+         'sqljoinedinheritance', order=9)
+def sqlcontentbaseclass(self, source, target):
+    '''sqlalchemy class'''
+    targetclass = read_target_node(source, target.target)
+    
+    module = targetclass.parent
+    classatts = [att for att in targetclass.filtereditems(IAttribute)]
+
+    #if a class is a base class for joined_inheritance it must have discriminator
+    #and __mapper_args__
+    if not [a for a in classatts if a.targets == ['__mapper_args__']]:
+        abstract = Attribute(['__mapper_args__'], "{'polymorphic_on':discriminator}")
+        abstract.__name__ = '__mapper_args__'
+        targetclass.insertfirst(abstract)
+    if not [a for a in classatts if a.targets == ['discriminator']]:
+        abstract = Attribute(['discriminator'], "Column(String)")
+        abstract.__name__ = 'discriminator'
+        targetclass.insertfirst(abstract)
 
 @handler('sqlcontentclass', 'uml2fs', 'connectorgenerator',
          'sqlcontent', order=10)
@@ -123,16 +144,39 @@ def sqlcontentclass(self, source, target):
 
     #lets inherit from Base unless we dont inherit from a sql_content class
     has_sql_parent=False
+    joined_parents=[]
     for inh in Inheritance(source).values():
         if inh.context.stereotype('sql:sql_content'):
             has_sql_parent=True
-            break
-        
+            if inh.context.stereotype('sql:joined_inheritance'):
+                joined_parents.append(inh.context)
+
     if targetclass.bases == ['object']:
         targetclass.bases = ['Base']
     else:
         if not has_sql_parent and 'Base' not in targetclass.bases:
             targetclass.bases.insert(0, 'Base')
+
+    #if the class has parents that are joined base classes
+    #we need __mapper_args__ and a foreign primary key
+    for parent in joined_parents:
+        pk=get_pks(parent)[0]
+        pfkname=pk.name
+        typename=pk.type.name
+        if pk.type.stereotype('sql:sql_type'):
+            tgv=TaggedValues(pk.type)
+            typename=tgv.direct('classname','sql:sql_type',typename)
+        fk="ForeignKey('%s.%s')" % (parent.name.lower(),pk.name)
+        pfkstmt="Column(%s, %s,primary_key = True)" %(typename,fk)
+        if not [a for a in classatts if a.targets == [pfkname]]:
+            pfk = Attribute([pfkname], pfkstmt)
+            pfk.__name__ = pfkname
+            targetclass.insertfirst(pfk)
+        if not [a for a in classatts if a.targets == ['__mapper_args__']]:
+            abstract = Attribute(['__mapper_args__'], "{'polymorphic_identity':'%s'}" % source.name.lower())
+            abstract.__name__ = '__mapper_args__'
+            targetclass.insertfirst(abstract)
+
 
 @handler('sqlcontentclass_engine_created_handler', 'uml2fs', 'connectorgenerator',
          'sqlcontent', order=11)
@@ -213,10 +257,13 @@ def sqlrelations_foreignkeys(self, source, target):
         otherend=relend.association.memberEnds[1]
         otherclass=otherend.type
         pks=get_pks(klass)
-#        import pdb;pdb.set_trace()
 
+        joins=[]
         for pk in pks:
             fkname='%s_%s' % (otherend.name,pk.name)
+            #this stmt will be attached to otherend in order to be used
+            #for the join in the relationship stmt
+            joinstmt='%s.%s==%s.%s' %(source.name,fkname,otherclass.name,pk.name)
             if fkname not in attrnames:
                 attr=Attribute()
                 attr.__name__=str(attr.uuid)
@@ -243,8 +290,10 @@ def sqlrelations_foreignkeys(self, source, target):
                 for k in options:
                     oparray.append('%s = %s' % (k, options[k]))
                 attr.value = 'Column(%s, %s, %s)' % (typename, fk, ', '.join(oparray))
-
-@handler('sqlrelations_relations', 'uml2fs', 'connectorgenerator',
+        
+            joins.append(joinstmt)
+            token(str(otherend.uuid), True, joins=joins)
+@handler('sqlrelations_relations', 'uml2fs', 'semanticsgenerator',
          'sqlcontent', order=9)
 def sqlrelations_relations(self, source, target):
     '''generate relations'''
@@ -315,6 +364,10 @@ def sqlrelations_relations(self, source, target):
                 else: #unordered
                     options['collection_class']="attribute_mapped_collection('%s')" % keyname
                     imps.set('sqlalchemy.orm.collections',[['attribute_mapped_collection',None]])
+            #make the primaryjoin stmt
+            tok=token(str(relend.uuid),True,joins=[])
+            if tok.joins:
+                options['primaryjoin']="'%s'" % ','.join(tok.joins)
 
             if True or relend.navigable: #XXX .navigable isnt yet correctly parsed from uml, thus the hardcoding
                 options['backref']="'%s'" % relend.name.lower()
@@ -326,7 +379,9 @@ def sqlrelations_relations(self, source, target):
             oparray = []
             for k in options:
                 oparray.append('%s = %s' % (k, options[k]))
+                
             attr.value = "relationship('%s', %s)" % (otherclass.name, ', '.join(oparray))
+                
 
 @handler('sqlattribute', 'uml2fs', 'hierarchygenerator', 'pyattribute', order=41)
 def pyattribute(self, source, target):
