@@ -145,11 +145,19 @@ def sqlcontentclass(self, source, target):
     #lets inherit from Base unless we dont inherit from a sql_content class
     has_sql_parent=False
     joined_parents=[]
+    table_per_class_parents=[]
     for inh in Inheritance(source).values():
         if inh.context.stereotype('sql:sql_content'):
             has_sql_parent=True
             if inh.context.stereotype('sql:joined_inheritance'):
                 joined_parents.append(inh.context)
+            elif inh.context.stereotype('sql:table_per_class_inheritance'):
+                table_per_class_parents.append(inh.context)
+            else:
+                msg='''when inheriting from an sql_content class (%s) the parent has
+ too have either <<joined_inheritance>> or 
+ <<table_per_class_inheritance>> stereotype''' % source.name
+                raise ValueError, msg 
 
     if targetclass.bases == ['object']:
         targetclass.bases = ['Base']
