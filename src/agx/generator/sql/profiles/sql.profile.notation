@@ -45,7 +45,7 @@
       <layoutConstraint xmi:type="notation:Bounds" xmi:id="_zgvtPtgQEeGgbbtOgTBdsg"/>
     </children>
     <element xmi:type="uml:Stereotype" href="sql.profile.uml#_zgsC0NgQEeGgbbtOgTBdsg"/>
-    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_zgvGIdgQEeGgbbtOgTBdsg" x="320" y="160"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_zgvGIdgQEeGgbbtOgTBdsg" x="335" y="160"/>
   </children>
   <children xmi:type="notation:Shape" xmi:id="_5jmAcNgQEeGgbbtOgTBdsg" type="1026" fontName="Ubuntu" fontHeight="11" lineColor="0">
     <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_5jmActgQEeGgbbtOgTBdsg" source="ShadowFigure">
@@ -399,7 +399,7 @@
       <layoutConstraint xmi:type="notation:Bounds" xmi:id="_jHaHAAfWEeKpRbyYQgkyoQ"/>
     </children>
     <element xmi:type="uml:Stereotype" href="sql.profile.uml#_jHUnYAfWEeKpRbyYQgkyoQ"/>
-    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_jHZf4QfWEeKpRbyYQgkyoQ" x="140" y="160" width="161"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_jHZf4QfWEeKpRbyYQgkyoQ" x="160" y="160" width="161"/>
   </children>
   <children xmi:type="notation:Shape" xmi:id="_PsVzIAiLEeKpRbyYQgkyoQ" type="1026" fontName="Ubuntu" lineColor="0">
     <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_PsWaMAiLEeKpRbyYQgkyoQ" source="ShadowFigure">
@@ -425,7 +425,7 @@
       <layoutConstraint xmi:type="notation:Bounds" xmi:id="_PslDtAiLEeKpRbyYQgkyoQ"/>
     </children>
     <element xmi:type="uml:Stereotype" href="sql.profile.uml#_PsT98AiLEeKpRbyYQgkyoQ"/>
-    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_PsVzIQiLEeKpRbyYQgkyoQ" x="20" y="160"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_PsVzIQiLEeKpRbyYQgkyoQ" x="5" y="160"/>
   </children>
   <styles xmi:type="notation:DiagramStyle" xmi:id="_r5DjEdgQEeGgbbtOgTBdsg"/>
   <element xmi:type="uml:Profile" href="sql.profile.uml#_f6v-ANgQEeGgbbtOgTBdsg"/>

@@ -56,11 +56,11 @@ from node.ext.python import Import
 
 from agx.generator.zca import utils as zcautils
 from agx.generator.sql.scope import SqlContentScope, SqlTableScope, \
-    SqlSAConfigScope, SqlTablePerClassScope, SqlJoinedInheritanceScope
+    SqlSAConfigScope, SqlConcreteTableInheritanceScope, SqlJoinedTableInheritanceScope
 
 registerScope('sqlcontent', 'uml2fs', [IClass] , SqlContentScope)
-registerScope('sqltableperclassinheritance', 'uml2fs', [IClass] , SqlTablePerClassScope)
-registerScope('sqljoinedinheritance', 'uml2fs', [IClass] , SqlJoinedInheritanceScope)
+registerScope('sqlconcretetableinheritance', 'uml2fs', [IClass] , SqlConcreteTableInheritanceScope)
+registerScope('sqljoinedtableinheritance', 'uml2fs', [IClass] , SqlJoinedTableInheritanceScope)
 registerScope('sql_config', 'uml2fs', [IPackage] , SqlSAConfigScope)
 registerScope('sqlassociation', 'uml2fs', [IAssociation], Scope)
 
@@ -83,16 +83,16 @@ def get_pks(klass):
     return res
 
 
-@handler('sqlcontentbaseclass', 'uml2fs', 'connectorgenerator',
-         'sqljoinedinheritance', order=9)
-def sqlcontentbaseclass(self, source, target):
-    '''sqlalchemy class'''
+@handler('sqljoinedtablebaseclass', 'uml2fs', 'connectorgenerator',
+         'sqljoinedtableinheritance', order=9)
+def sqljoinedtablebaseclass(self, source, target):
+    '''preparation for joined table inheritance base class'''
     targetclass = read_target_node(source, target.target)
     
     module = targetclass.parent
     classatts = [att for att in targetclass.filtereditems(IAttribute)]
 
-    #if a class is a base class for joined_inheritance it must have discriminator
+    #if a class is a base class for joined_table_inheritance it must have discriminator
     #and __mapper_args__
     if not [a for a in classatts if a.targets == ['__mapper_args__']]:
         abstract = Attribute(['__mapper_args__'], "{'polymorphic_on':discriminator}")
@@ -135,8 +135,8 @@ def sqlcontentclass(self, source, target):
         tablename.__name__ = '__tablename__'
         targetclass.insertfirst(tablename)
 
-    #if a class is a base class for table_per_class_inheritance it must be abstract
-    if source.stereotype('sql:table_per_class_inheritance'):
+    #if a class is a base class for concrete_table_inheritance it must be abstract
+    if source.stereotype('sql:concrete_table_inheritance'):
         if not [a for a in classatts if a.targets == ['__abstract__']]:
             abstract = Attribute(['__abstract__'], "True")
             abstract.__name__ = '__abstract__'
@@ -149,14 +149,15 @@ def sqlcontentclass(self, source, target):
     for inh in Inheritance(source).values():
         if inh.context.stereotype('sql:sql_content'):
             has_sql_parent=True
-            if inh.context.stereotype('sql:joined_inheritance'):
+            if inh.context.stereotype('sql:joined_table_inheritance'):
                 joined_parents.append(inh.context)
-            elif inh.context.stereotype('sql:table_per_class_inheritance'):
+            elif inh.context.stereotype('sql:concrete_table_inheritance'):
                 table_per_class_parents.append(inh.context)
             else:
                 msg='''when inheriting from an sql_content class (%s) the parent has
- too have either <<joined_inheritance>> or 
- <<table_per_class_inheritance>> stereotype''' % source.name
+ to have either <<joined_table_inheritance>> or <<concrete_table_inheritance>> stereotype !
+ see http://docs.sqlalchemy.org/en/rel_0_7/orm/inheritance.html for further info
+     ''' % source.name
                 raise ValueError, msg 
 
     if targetclass.bases == ['object']:
