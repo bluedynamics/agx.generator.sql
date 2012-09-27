@@ -26,6 +26,7 @@ from node.ext.python.utils import Imports
 
 from node.ext.uml.utils import (
     TaggedValues,
+    Inheritance,
     UNSET,
 )
 from agx.generator.pyegg.utils import (
@@ -54,9 +55,11 @@ from node.ext.template import JinjaTemplate
 from node.ext.python import Import
 
 from agx.generator.zca import utils as zcautils
-from agx.generator.sql.scope import SqlContentScope, SqlTableScope, SqlSAConfigScope
+from agx.generator.sql.scope import SqlContentScope, SqlTableScope, \
+    SqlSAConfigScope, SqlTablePerClassScope
 
 registerScope('sqlcontent', 'uml2fs', [IClass] , SqlContentScope)
+registerScope('sqltableperclassinheritance', 'uml2fs', [IClass] , SqlTablePerClassScope)
 registerScope('sql_config', 'uml2fs', [IPackage] , SqlSAConfigScope)
 registerScope('sqlassociation', 'uml2fs', [IAssociation], Scope)
 
@@ -68,6 +71,14 @@ def get_pks(klass):
     res = [f for f in klass.filtereditems(IProperty) \
         if f.stereotype('sql:primary')]
     
+    if not res:
+        #then we look if we can find an inherited primary key
+        inhs=Inheritance(klass)
+        for inh in inhs.values():
+            if inh.context.stereotype('sql:sql_content'):
+                res=get_pks(inh.context)
+                if res:
+                    return res
     return res
 
 
@@ -76,6 +87,7 @@ def get_pks(klass):
 def sqlcontentclass(self, source, target):
     '''sqlalchemy class'''
     targetclass = read_target_node(source, target.target)
+    
     module = targetclass.parent
     imps = Imports(module)
     imps.set('sqlalchemy.ext.declarative', [['declarative_base', None]])
@@ -95,17 +107,31 @@ def sqlcontentclass(self, source, target):
     if not [a for a in globalatts if a.targets == ['Base']]:
         module.insertafter(att, lastimport)
 
+
     #generate the __tablename__ attribute
     if not [a for a in classatts if a.targets == ['__tablename__']]:
         tablename = Attribute(['__tablename__'], "'%s'" % (source.name.lower()))
         tablename.__name__ = '__tablename__'
         targetclass.insertfirst(tablename)
 
-    #lets inherit from Base
+    #if a class is a base class for table_per_class_inheritance it must be abstract
+    if source.stereotype('sql:table_per_class_inheritance'):
+        if not [a for a in classatts if a.targets == ['__abstract__']]:
+            abstract = Attribute(['__abstract__'], "True")
+            abstract.__name__ = '__abstract__'
+            targetclass.insertfirst(abstract)
+
+    #lets inherit from Base unless we dont inherit from a sql_content class
+    has_sql_parent=False
+    for inh in Inheritance(source).values():
+        if inh.context.stereotype('sql:sql_content'):
+            has_sql_parent=True
+            break
+        
     if targetclass.bases == ['object']:
         targetclass.bases = ['Base']
     else:
-        if 'Base' not in targetclass.bases:
+        if not has_sql_parent and 'Base' not in targetclass.bases:
             targetclass.bases.insert(0, 'Base')
 
 @handler('sqlcontentclass_engine_created_handler', 'uml2fs', 'connectorgenerator',
@@ -244,7 +270,6 @@ def sqlrelations_relations(self, source, target):
         klass=relend.parent
         otherend=relend.association.memberEnds[0]
         otherclass=otherend.type
-        pks=get_pks(klass)
         relname=otherend.name
         tgv=TaggedValues(assoc)
 
