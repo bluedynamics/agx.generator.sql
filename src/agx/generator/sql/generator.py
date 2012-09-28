@@ -259,7 +259,11 @@ def sqlrelations_foreignkeys(self, source, target):
     #get the last attribute and append there the foreignkeys
     attrs=targetclass.attributes()
     attrnames=[att.targets[0] for att in attrs]
-    lastattr = targetclass.attributes()[-1]
+    try:
+        lastattr = targetclass.attributes()[-1]
+    except IndexError:
+        lastattr=None
+        
     incoming_relations = token(str(source.uuid), True, incoming_relations=[]).incoming_relations
     for relend in incoming_relations:
         klass=relend.parent
@@ -276,7 +280,11 @@ def sqlrelations_foreignkeys(self, source, target):
             if fkname not in attrnames:
                 attr=Attribute()
                 attr.__name__=str(attr.uuid)
-                targetclass.insertafter(attr,lastattr)
+                if lastattr:
+                    targetclass.insertafter(attr,lastattr)
+                else:
+                    targetclass.insertfirst(attr)
+                    
                 attr.targets=[fkname]
                 fk="ForeignKey('%s.%s')" % (otherclass.name.lower(),pk.name)
                 options={}
@@ -315,7 +323,10 @@ def sqlrelations_relations(self, source, target):
     #get the last attribute and append there the relations
     attrs=targetclass.attributes()
     attrnames=[att.targets[0] for att in attrs]
-    lastattr = targetclass.attributes()[-1]
+    try:
+        lastattr = targetclass.attributes()[-1]
+    except IndexError:
+        lastattr=None
     
     outgoing_relations = token(str(source.uuid), True, outgoing_relations=[]).outgoing_relations
     imps = Imports(module)
@@ -334,7 +345,11 @@ def sqlrelations_relations(self, source, target):
         if relname not in attrnames:
             attr=Attribute()
             attr.__name__=str(attr.uuid)
-            targetclass.insertafter(attr,lastattr)
+            if lastattr:
+                targetclass.insertafter(attr,lastattr)
+            else:
+                targetclass.insertfirst(attr)
+                
             attr.targets=[relname]
             options={}
             #collect options for relationship
@@ -444,7 +459,6 @@ def sql_config(self, source, target):
     conf = zcautils.get_zcml(tg, 'configure.zcml', nsmap=nsmap)
     tgv = TaggedValues(source)
 
-#    import pdb;pdb.set_trace()
     engine_name = tgv.direct('engine_name', 'sql:z3c_saconfig', 'default')
     engine_url = tgv.direct('engine_url', 'sql:z3c_saconfig', 'sqlite:///memory')
     session_name = tgv.direct('session_name', 'sql:z3c_saconfig', 'default')
