@@ -435,6 +435,35 @@ def pyattribute(self, source, target):
         if import_from:
             imps=Imports(module)
             imps.set(import_from,[[typename,None]])
+    #collect params from column stereotype
+    if source.stereotype('sql:column') or source.stereotype('sql:primary'):
+        coltgv=TaggedValues(source)
+        #index
+        index=coltgv.direct('index','sql:column',None) or \
+            source.stereotype('sql:primary')
+        if index:
+            options['index']='True'
+            
+        #default
+        default=coltgv.direct('default','sql:column',None) or \
+            coltgv.direct('dafault','sql:primary',None) or \
+            options.get('default')
+        if default:
+            options['default']=default
+
+        #nullable
+        not_null=None
+        if coltgv.direct('not_null','sql:column',None) is not None:
+            not_null=coltgv.direct('not_null','sql:column')
+        if not_null is not None:
+            options['nullable']= {'true':False,'false':True}[not_null]
+
+        #server_default
+        server_default=coltgv.direct('server_default','sql:column',None) or \
+            coltgv.direct('server_default','sql:primary',None)
+        if server_default:
+            options['server_default']=server_default
+            
 
     targetatt = read_target_node(source, target.target)
     if options:
