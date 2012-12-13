@@ -87,6 +87,8 @@ def get_pks(klass):
          'sqljoinedtableinheritance', order=9)
 def sqljoinedtablebaseclass(self, source, target):
     '''preparation for joined table inheritance base class'''
+    if source.stereotype('pyegg:stub'):
+        return
     targetclass = read_target_node(source, target.target)
     
     module = targetclass.parent
@@ -107,6 +109,9 @@ def sqljoinedtablebaseclass(self, source, target):
          'sqlcontent', order=10)
 def sqlcontentclass(self, source, target):
     '''sqlalchemy class'''
+    if source.stereotype('pyegg:stub'):
+        return
+
     targetclass = read_target_node(source, target.target)
     
     module = targetclass.parent
@@ -169,7 +174,10 @@ def sqlcontentclass(self, source, target):
     #if the class has parents that are joined base classes
     #we need __mapper_args__ and a foreign primary key
     for parent in joined_parents:
-        pk=get_pks(parent)[0]
+        pks=get_pks(parent)
+        if not pks:
+            raise ValueError,'class %s must have a primary key defined!' % parent.name
+        pk=pks[0]
         pfkname=pk.name
         typename=pk.type.name
         if pk.type.stereotype('sql:sql_type'):
@@ -191,6 +199,9 @@ def sqlcontentclass(self, source, target):
          'sqlcontent', order=11)
 def sqlcontentclass_engine_created_handler(self, source, target):
     '''create and register the handler for the IEngineCreatedEvent'''
+    if source.stereotype('pyegg:stub'):
+        return
+    
     targetclass = read_target_node(source, target.target)
     module = targetclass.parent
     imps = Imports(module)
@@ -251,6 +262,10 @@ def sqlrelations_collect(self, source, target):
          'sqlcontent', order=8)
 def sqlrelations_foreignkeys(self, source, target):
     '''generate foreign key attributes'''
+    
+    if source.stereotype('pyegg:stub'):
+        return
+
     if not source.stereotype('sql:sql_content'):
         return
 
@@ -314,6 +329,9 @@ def sqlrelations_foreignkeys(self, source, target):
          'sqlcontent', order=9)
 def sqlrelations_relations(self, source, target):
     '''generate relations'''
+    if source.stereotype('pyegg:stub'):
+        return
+
     if not source.stereotype('sql:sql_content'):
         return
 
@@ -412,6 +430,9 @@ def pyattribute(self, source, target):
     """Create Attribute.
     """
     klass=source.parent
+    
+    if klass.stereotype('pyegg:stub'):
+        return
     if not klass.stereotype('sql:sql_content'):
         return
     targetclass= read_target_node(klass, target.target)
