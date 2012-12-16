@@ -82,6 +82,22 @@ def get_pks(klass):
                     return res
     return res
 
+def get_tablename(klass):
+    tgv=TaggedValues(klass)
+    tablename=tgv.direct('tablename','sql:sql_content', klass.name.lower())
+    
+    return tablename
+    
+def get_colid(col):
+    coltgv=TaggedValues(col)
+    colid=coltgv.direct('id','sql:column',None) or \
+        coltgv.direct('id','sql:primary',None)
+        
+    if not colid:
+        colid=col.name
+        
+    return colid
+        
 
 @handler('sqljoinedtablebaseclass', 'uml2fs', 'connectorgenerator',
          'sqljoinedtableinheritance', order=9)
@@ -120,7 +136,8 @@ def sqlcontentclass(self, source, target):
     imps.set('sqlalchemy', [['Column', None],
                            ['Integer', None],
                            ['String', None],
-                           ['ForeignKey', None]])
+                           ['ForeignKey', None],
+                           ['Sequence', None]])
 
     #find last import and do some assignments afterwards
     lastimport = [imp for imp in module.filtereditems(IImport)][-1]
@@ -136,7 +153,7 @@ def sqlcontentclass(self, source, target):
 
     #generate the __tablename__ attribute
     if not [a for a in classatts if a.targets == ['__tablename__']]:
-        tablename = Attribute(['__tablename__'], "'%s'" % (source.name.lower()))
+        tablename = Attribute(['__tablename__'], "'%s'" % (get_tablename(source)))
         tablename.__name__ = '__tablename__'
         targetclass.insertfirst(tablename)
 
@@ -178,12 +195,13 @@ def sqlcontentclass(self, source, target):
         if not pks:
             raise ValueError,'class %s must have a primary key defined!' % parent.name
         pk=pks[0]
-        pfkname=pk.name
+        pkname=get_colid(pk)
+        pfkname=pkname
         typename=pk.type.name
         if pk.type.stereotype('sql:sql_type'):
             tgv=TaggedValues(pk.type)
             typename=tgv.direct('classname','sql:sql_type',typename)
-        fk="ForeignKey('%s.%s')" % (parent.name.lower(),pk.name)
+        fk="ForeignKey('%s.%s')" % (get_tablename(parent),pkname)
         pfkstmt="Column(%s, %s,primary_key = True)" %(typename,fk)
         if not [a for a in classatts if a.targets == [pfkname]]:
             pfk = Attribute([pfkname], pfkstmt)
@@ -288,10 +306,11 @@ def sqlrelations_foreignkeys(self, source, target):
 
         joins=[]
         for pk in pks:
-            fkname='%s_%s' % (otherend.name,pk.name)
+            pkname=get_colid(pk)
+            fkname='%s_%s' % (otherend.name,pkname)
             #this stmt will be attached to otherend in order to be used
             #for the join in the relationship stmt
-            joinstmt='%s.%s==%s.%s' %(source.name,fkname,otherclass.name,pk.name)
+            joinstmt='%s.%s==%s.%s' %(source.name,fkname,otherclass.name,pkname)
             if fkname not in attrnames:
                 attr=Attribute()
                 attr.__name__=str(attr.uuid)
@@ -301,7 +320,7 @@ def sqlrelations_foreignkeys(self, source, target):
                     targetclass.insertfirst(attr)
                     
                 attr.targets=[fkname]
-                fk="ForeignKey('%s.%s')" % (otherclass.name.lower(),pk.name)
+                fk="ForeignKey('%s.%s')" % (get_tablename(otherclass),pkname)
                 options={}
                 typename=pk.type.name
                 #handle custom types (PrimitveType)
@@ -442,8 +461,11 @@ def pyattribute(self, source, target):
 
     typename=source.type.name
     options = {}
+    
     if source.stereotype('sql:primary'):
         options['primary_key'] = 'True'
+
+    colid=None
         
     # retrieve options if the primitive type has <<sql_type>>
     if source.type.stereotype('sql:sql_type'):
@@ -456,9 +478,19 @@ def pyattribute(self, source, target):
         if import_from:
             imps=Imports(module)
             imps.set(import_from,[[typename,None]])
+
+    positionals=[typename]
+            
     #collect params from column stereotype
     if source.stereotype('sql:column') or source.stereotype('sql:primary'):
         coltgv=TaggedValues(source)
+        #id
+        colid=coltgv.direct('id','sql:column',None) or \
+            coltgv.direct('id','sql:primary',None)
+            
+        if colid:
+            positionals.insert(0,"'%s'" % colid)
+        
         #index
         index=coltgv.direct('index','sql:column',None) or \
             source.stereotype('sql:primary')
@@ -485,15 +517,25 @@ def pyattribute(self, source, target):
         if server_default:
             options['server_default']=server_default
             
+        #sequence
+        sequence=coltgv.direct('sequence','sql:column',None) or \
+            coltgv.direct('sequence','sql:primary',None)
+            
+        if sequence:
+            positionals.append("Sequence('%s')" % sequence)
 
     targetatt = read_target_node(source, target.target)
+    
     if options:
         oparray = []
         for k in options:
             oparray.append('%s = %s' % (k, options[k]))
-        targetatt.value = 'Column(%s,%s)' % (typename, ', '.join(oparray))
+            
+        targetatt.value = 'Column(%s,%s)' % (','.join(positionals), ', '.join(oparray))
+
     else:
-        targetatt.value = 'Column(%s)' % typename
+        targetatt.value = 'Column(%s)' % (','.join(positionals))
+            
 
 
 @handler('sql_config', 'uml2fs', 'hierarchygenerator', 'sql_config', order=41)
@@ -520,16 +562,15 @@ def sql_config(self, source, target):
 
     #write the readme
     fname = 'README-sqlalchemy.rst'
-    if fname not in tg:
-        readme = JinjaTemplate()
-        readme.template = templatepath(fname + '.jinja')
-        readme.params = {
-            'engine_name':engine_name,
-            'engine_url':engine_url,
-            'session_name':session_name,
-            'packagename':dotted_path(source),
-            }
-        tg[fname] = readme
+    readme = JinjaTemplate()
+    readme.template = templatepath(fname + '.jinja')
+    readme.params = {
+        'engine_name':engine_name,
+        'engine_url':engine_url,
+        'session_name':session_name,
+        'packagename':dotted_path(source),
+        }
+    tg[fname] = readme
 
 @handler('sql_dependencies', 'uml2fs', 'semanticsgenerator', 'sql_config')
 def sql_dependencies(self, source, target):
