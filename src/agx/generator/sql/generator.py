@@ -53,6 +53,7 @@ from node.ext.zcml import (
 )
 from node.ext.template import JinjaTemplate
 from node.ext.python import Import
+from agx.generator.pyegg.utils import egg_source
 
 from agx.generator.zca import utils as zcautils
 from agx.generator.sql.scope import SqlContentScope, SqlTableScope, \
@@ -226,19 +227,23 @@ def sqlcontentclass_engine_created_handler(self, source, target):
 
     #check if one of the parent packages has the z3c_saconfig stereotype
     has_z3c_saconfig = False
+    engine_name=None
     par = source.parent
     while par:
         if par.stereotype('sql:z3c_saconfig'):
             has_z3c_saconfig = True
+            eggtgv=TaggedValues(par)
+            engine_name = eggtgv.direct('engine_name', 'sql:z3c_saconfig', 'default')
+            break
         par = par.parent
     #add engine-created handler
     if has_z3c_saconfig:
         globalfuncs = [f for f in module.filtereditems(IFunction)]
         globalfuncnames = [f.functionname for f in globalfuncs]
         if 'engineCreatedHandler' not in globalfuncnames:
-
             imps.set('z3c.saconfig.interfaces', [['IEngineCreatedEvent', None]])
             imps.set('zope', [['component', None]])
+            imps.set('z3c.saconfig.interfaces',[['IEngineFactory',None]])
 
             att = [att for att in module.filtereditems(IAttribute) if att.targets == ['Base']][0]
             ff = Function('engineCreatedHandler')
@@ -248,7 +253,9 @@ def sqlcontentclass_engine_created_handler(self, source, target):
             dec.__name__ = dec.uuid
             dec.args = ('IEngineCreatedEvent',)
             ff.insertfirst(dec)
-            block = Block('Base.metadata.create_all(event.engine)')
+            block = Block("fact=component.queryUtility(IEngineFactory,'%s')\n" % engine_name+
+                          'if fact and fact._args==event.engine_args:\n'+
+                          '    Base.metadata.create_all(event.engine)\n')
             block.__name__ = block.uuid
             ff.insertlast(block)
             module.insertafter(ff, att)
