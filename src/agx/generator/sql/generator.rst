@@ -32,4 +32,4 @@ Setup configuration and emulate main routine::
     >>> controller = agx.core.Controller()
     >>> target = controller(modelpaths, outdir)
     >>> target
-    <Directory object '/.../agx.generator.sql/src/agx/generator/sql/tests/data/agx.generator.sql-sample' at ...>
+    <Directory object '/.../agx.generator.sql/src/agx/generator/sql/testing/data/agx.generator.sql-sample' at ...>
