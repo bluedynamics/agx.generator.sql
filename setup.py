@@ -41,6 +41,8 @@ setup(name="agx.generator.sql",
       ),
       entry_points="""
       ##code-section entry_points
+      [agx.generator]
+      register = agx.generator.sql:register
       ##/code-section entry_points
       """,
       ##code-section additionals
