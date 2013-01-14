@@ -209,7 +209,7 @@ def sqlcontentclass(self, source, target):
         pks = get_pks(parent)
         if not pks:
             msg = 'class %s must have a primary key defined!' % parent.name
-            raise ValueError(msg):
+            raise ValueError(msg)
         pk = pks[0]
         pkname = get_colid(pk)
         pfkname = pkname
@@ -277,7 +277,7 @@ def sqlcontentclass_engine_created_handler(self, source, target):
                 "fact = component.queryUtility(IEngineFactory, '%s')" \
                     % engine_name,
                 "if fact and fact._args == event.engine_args:",
-                "    Base.metadata.create_all(event.engine),
+                "    Base.metadata.create_all(event.engine)",
             ]
             block = Block('\n'.join(block_lines))
             block.__name__ = block.uuid
