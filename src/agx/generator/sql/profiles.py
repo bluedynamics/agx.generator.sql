@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-from zope.interface import implements
+from zope.interface import implementer
 from agx.core.interfaces import IProfileLocation
 import agx.generator.sql
 
-class ProfileLocation(object):
 
-    implements(IProfileLocation)
+@implementer(IProfileLocation)
+class ProfileLocation(object):
     name = u'sql.profile.uml'
     package = agx.generator.sql

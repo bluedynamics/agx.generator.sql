@@ -1,11 +1,15 @@
 # 
+import os
+from setuptools import (
+    setup,
+    find_packages,
+)
 
-from setuptools import setup, find_packages
-import sys, os
 
 version = "1.0"
 shortdesc =""
 longdesc = open(os.path.join(os.path.dirname(__file__), 'README.rst')).read()
+
 
 setup(name="agx.generator.sql",
       version=version,
