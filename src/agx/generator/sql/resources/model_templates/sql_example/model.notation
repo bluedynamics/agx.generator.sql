@@ -58,11 +58,11 @@
             <children xmi:type="notation:DecorationNode" xmi:id="_zNyFZNhGEeG3YaatKuZj6A" type="5014"/>
             <children xmi:type="notation:BasicCompartment" xmi:id="_zNyFZdhGEeG3YaatKuZj6A" type="7011">
               <children xmi:type="notation:Shape" xmi:id="_-BW8sNhGEeG3YaatKuZj6A" type="3012" fontName="Ubuntu" fontHeight="11" lineColor="0">
-                <element xmi:type="uml:Property" href="agx.generator.sql-sample.uml#_-BQ2ENhGEeG3YaatKuZj6A"/>
+                <element xmi:type="uml:Property" href="model.uml#_-BQ2ENhGEeG3YaatKuZj6A"/>
                 <layoutConstraint xmi:type="notation:Location" xmi:id="_-BW8sdhGEeG3YaatKuZj6A"/>
               </children>
               <children xmi:type="notation:Shape" xmi:id="_BZmD0NhHEeG3YaatKuZj6A" type="3012" fontName="Ubuntu" fontHeight="11" lineColor="0">
-                <element xmi:type="uml:Property" href="agx.generator.sql-sample.uml#_BZkOoNhHEeG3YaatKuZj6A"/>
+                <element xmi:type="uml:Property" href="model.uml#_BZkOoNhHEeG3YaatKuZj6A"/>
                 <layoutConstraint xmi:type="notation:Location" xmi:id="_BZmD0dhHEeG3YaatKuZj6A"/>
               </children>
               <children xmi:type="notation:Shape" xmi:id="_EISH4NlpEeG3YaatKuZj6A" type="3012" fontName="Ubuntu" fontHeight="11" lineColor="0">
@@ -73,7 +73,7 @@
                   <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_IRn70tlpEeG3YaatKuZj6A" key="PropStereoDisplay" value=""/>
                   <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_IRn709lpEeG3YaatKuZj6A" key="StereotypePropertyLocation" value="Compartment"/>
                 </eAnnotations>
-                <element xmi:type="uml:Property" href="agx.generator.sql-sample.uml#_EIQSsNlpEeG3YaatKuZj6A"/>
+                <element xmi:type="uml:Property" href="model.uml#_EIQSsNlpEeG3YaatKuZj6A"/>
                 <layoutConstraint xmi:type="notation:Location" xmi:id="_EISH4dlpEeG3YaatKuZj6A"/>
               </children>
               <styles xmi:type="notation:TitleStyle" xmi:id="_zNyFZthGEeG3YaatKuZj6A"/>
@@ -93,7 +93,7 @@
               <styles xmi:type="notation:FilteringStyle" xmi:id="_zNyseNhGEeG3YaatKuZj6A"/>
               <layoutConstraint xmi:type="notation:Bounds" xmi:id="_zNysedhGEeG3YaatKuZj6A"/>
             </children>
-            <element xmi:type="uml:Class" href="agx.generator.sql-sample.uml#_zNNdoNhGEeG3YaatKuZj6A"/>
+            <element xmi:type="uml:Class" href="model.uml#_zNNdoNhGEeG3YaatKuZj6A"/>
             <layoutConstraint xmi:type="notation:Bounds" xmi:id="_zNwQMdhGEeG3YaatKuZj6A" x="15" y="13" width="191" height="201"/>
           </children>
           <children xmi:type="notation:Shape" xmi:id="_pgEtgNiUEeG3YaatKuZj6A" type="3010" fontName="Ubuntu" fontHeight="11" lineColor="0">
@@ -116,19 +116,19 @@
             <children xmi:type="notation:DecorationNode" xmi:id="_pgFUkNiUEeG3YaatKuZj6A" type="5014"/>
             <children xmi:type="notation:BasicCompartment" xmi:id="_pgFUkdiUEeG3YaatKuZj6A" type="7011">
               <children xmi:type="notation:Shape" xmi:id="_r6mPMNiUEeG3YaatKuZj6A" type="3012" fontName="Ubuntu" fontHeight="11" lineColor="0">
-                <element xmi:type="uml:Property" href="agx.generator.sql-sample.uml#_r6jy8NiUEeG3YaatKuZj6A"/>
+                <element xmi:type="uml:Property" href="model.uml#_r6jy8NiUEeG3YaatKuZj6A"/>
                 <layoutConstraint xmi:type="notation:Location" xmi:id="_r6mPMdiUEeG3YaatKuZj6A"/>
               </children>
               <children xmi:type="notation:Shape" xmi:id="_t6wwINiUEeG3YaatKuZj6A" type="3012" fontName="Ubuntu" fontHeight="11" lineColor="0">
-                <element xmi:type="uml:Property" href="agx.generator.sql-sample.uml#_t6uT4NiUEeG3YaatKuZj6A"/>
+                <element xmi:type="uml:Property" href="model.uml#_t6uT4NiUEeG3YaatKuZj6A"/>
                 <layoutConstraint xmi:type="notation:Location" xmi:id="_t6wwIdiUEeG3YaatKuZj6A"/>
               </children>
               <children xmi:type="notation:Shape" xmi:id="_vZjpYNiUEeG3YaatKuZj6A" type="3012" fontName="Ubuntu" fontHeight="11" lineColor="0">
-                <element xmi:type="uml:Property" href="agx.generator.sql-sample.uml#_vZhNINiUEeG3YaatKuZj6A"/>
+                <element xmi:type="uml:Property" href="model.uml#_vZhNINiUEeG3YaatKuZj6A"/>
                 <layoutConstraint xmi:type="notation:Location" xmi:id="_vZjpYdiUEeG3YaatKuZj6A"/>
               </children>
               <children xmi:type="notation:Shape" xmi:id="_4IBOUNiUEeG3YaatKuZj6A" type="3012" fontName="Ubuntu" fontHeight="11" lineColor="0">
-                <element xmi:type="uml:Property" href="agx.generator.sql-sample.uml#_4H_ZINiUEeG3YaatKuZj6A"/>
+                <element xmi:type="uml:Property" href="model.uml#_4H_ZINiUEeG3YaatKuZj6A"/>
                 <layoutConstraint xmi:type="notation:Location" xmi:id="_4IBOUdiUEeG3YaatKuZj6A"/>
               </children>
               <children xmi:type="notation:Shape" xmi:id="_eKu9INlpEeG3YaatKuZj6A" type="3012" fontName="Ubuntu" fontHeight="11" lineColor="0">
@@ -139,7 +139,7 @@
                   <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_iT7AFNlpEeG3YaatKuZj6A" key="PropStereoDisplay" value=""/>
                   <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_iT7AFdlpEeG3YaatKuZj6A" key="StereotypePropertyLocation" value="Compartment"/>
                 </eAnnotations>
-                <element xmi:type="uml:Property" href="agx.generator.sql-sample.uml#_eKsg4NlpEeG3YaatKuZj6A"/>
+                <element xmi:type="uml:Property" href="model.uml#_eKsg4NlpEeG3YaatKuZj6A"/>
                 <layoutConstraint xmi:type="notation:Location" xmi:id="_eKu9IdlpEeG3YaatKuZj6A"/>
               </children>
               <styles xmi:type="notation:TitleStyle" xmi:id="_pgFUktiUEeG3YaatKuZj6A"/>
@@ -159,13 +159,13 @@
               <styles xmi:type="notation:FilteringStyle" xmi:id="_pgFUntiUEeG3YaatKuZj6A"/>
               <layoutConstraint xmi:type="notation:Bounds" xmi:id="_pgFUn9iUEeG3YaatKuZj6A"/>
             </children>
-            <element xmi:type="uml:Class" href="agx.generator.sql-sample.uml#_pgBqMNiUEeG3YaatKuZj6A"/>
+            <element xmi:type="uml:Class" href="model.uml#_pgBqMNiUEeG3YaatKuZj6A"/>
             <layoutConstraint xmi:type="notation:Bounds" xmi:id="_pgEtgdiUEeG3YaatKuZj6A" x="385" y="8" width="191" height="186"/>
           </children>
           <styles xmi:type="notation:TitleStyle" xmi:id="_YgkSKdgVEeGgbbtOgTBdsg"/>
           <layoutConstraint xmi:type="notation:Bounds" xmi:id="_YgkSKtgVEeGgbbtOgTBdsg"/>
         </children>
-        <element xmi:type="uml:Package" href="agx.generator.sql-sample.uml#_Ygic8NgVEeGgbbtOgTBdsg"/>
+        <element xmi:type="uml:Package" href="model.uml#_Ygic8NgVEeGgbbtOgTBdsg"/>
         <layoutConstraint xmi:type="notation:Bounds" xmi:id="_YgkSINgVEeGgbbtOgTBdsg" x="15" y="14" width="631" height="290"/>
       </children>
       <children xmi:type="notation:Shape" xmi:id="_oEcusNkxEeG3YaatKuZj6A" type="3010" fontName="Ubuntu" fontHeight="11" lineColor="0">
@@ -188,7 +188,7 @@
         <children xmi:type="notation:DecorationNode" xmi:id="_oEdVxNkxEeG3YaatKuZj6A" type="5014"/>
         <children xmi:type="notation:BasicCompartment" xmi:id="_oEdVxdkxEeG3YaatKuZj6A" type="7011">
           <children xmi:type="notation:Shape" xmi:id="_wizbENkxEeG3YaatKuZj6A" type="3012" fontName="Ubuntu" fontHeight="11" lineColor="0">
-            <element xmi:type="uml:Property" href="agx.generator.sql-sample.uml#_wixl4NkxEeG3YaatKuZj6A"/>
+            <element xmi:type="uml:Property" href="model.uml#_wixl4NkxEeG3YaatKuZj6A"/>
             <layoutConstraint xmi:type="notation:Location" xmi:id="_wizbEdkxEeG3YaatKuZj6A"/>
           </children>
           <styles xmi:type="notation:TitleStyle" xmi:id="_oEdVxtkxEeG3YaatKuZj6A"/>
@@ -208,16 +208,16 @@
           <styles xmi:type="notation:FilteringStyle" xmi:id="_oEdV0tkxEeG3YaatKuZj6A"/>
           <layoutConstraint xmi:type="notation:Bounds" xmi:id="_oEdV09kxEeG3YaatKuZj6A"/>
         </children>
-        <element xmi:type="uml:Class" href="agx.generator.sql-sample.uml#_oEaScNkxEeG3YaatKuZj6A"/>
+        <element xmi:type="uml:Class" href="model.uml#_oEaScNkxEeG3YaatKuZj6A"/>
         <layoutConstraint xmi:type="notation:Bounds" xmi:id="_oEcusdkxEeG3YaatKuZj6A" x="15" y="323"/>
       </children>
       <layoutConstraint xmi:type="notation:Bounds" xmi:id="_0vsN4VyQEeG1mLF7jMwarw" x="-4" y="11" width="200" height="65"/>
     </children>
-    <element xmi:type="uml:Package" href="agx.generator.sql-sample.uml#_0vR-MFyQEeG1mLF7jMwarw"/>
+    <element xmi:type="uml:Package" href="model.uml#_0vR-MFyQEeG1mLF7jMwarw"/>
     <layoutConstraint xmi:type="notation:Bounds" xmi:id="_0vfZkFyQEeG1mLF7jMwarw" x="20" y="15" width="671" height="501"/>
   </children>
   <styles xmi:type="notation:DiagramStyle" xmi:id="_vl7ewVyQEeG1mLF7jMwarw"/>
-  <element xmi:type="uml:Model" href="agx.generator.sql-sample.uml#_rxHwYFyQEeG1mLF7jMwarw"/>
+  <element xmi:type="uml:Model" href="model.uml#_rxHwYFyQEeG1mLF7jMwarw"/>
   <edges xmi:type="notation:Connector" xmi:id="__-qacNiUEeG3YaatKuZj6A" type="4001" source="_zNwQMNhGEeG3YaatKuZj6A" target="_pgEtgNiUEeG3YaatKuZj6A" lineColor="0">
     <children xmi:type="notation:DecorationNode" xmi:id="__-rBgNiUEeG3YaatKuZj6A" type="6001">
       <layoutConstraint xmi:type="notation:Location" xmi:id="__-rBgdiUEeG3YaatKuZj6A" y="-20"/>
@@ -238,7 +238,7 @@
       <layoutConstraint xmi:type="notation:Location" xmi:id="__-romdiUEeG3YaatKuZj6A" y="-20"/>
     </children>
     <styles xmi:type="notation:FontStyle" xmi:id="__-qacdiUEeG3YaatKuZj6A" fontName="Ubuntu" fontHeight="11"/>
-    <element xmi:type="uml:Association" href="agx.generator.sql-sample.uml#__-nXINiUEeG3YaatKuZj6A"/>
+    <element xmi:type="uml:Association" href="model.uml#__-nXINiUEeG3YaatKuZj6A"/>
     <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="__-qactiUEeG3YaatKuZj6A" points="[43, 3, -221, -18]$[262, 21, -2, 0]"/>
     <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="___sVMNiUEeG3YaatKuZj6A" id="(0.7786259541984732,0.5572139303482587)"/>
     <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_ECL6QNiVEeG3YaatKuZj6A" id="(0.010471204188481676,0.7168674698795181)"/>

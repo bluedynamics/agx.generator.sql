@@ -1,0 +1,9 @@
+#---AGX Manifest---
+#Tue Jan 17 23:19:13 CET 2012
+files=model.di;\
+    model.notation;\
+    model.uml;\
+    model.uml.agx;\
+
+title=SQL Product
+description=Simple SQL content model with 2 sql_content classess
