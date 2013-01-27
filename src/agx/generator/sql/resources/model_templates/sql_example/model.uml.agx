@@ -1,5 +1,5 @@
 #---AGX Properties---
 #Fri Jul 27 20:00:16 CEST 2012
-profiles=pyegg
+profiles=pyegg, sql
 target=.
 
