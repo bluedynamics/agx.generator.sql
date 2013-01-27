@@ -1,77 +1,103 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xmi:XMI xmi:version="2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:pyegg="http:///schemas/pyegg/_m3LEwPJqEeC2FJWWHfGcuA/17" xmlns:sql="http:///schemas/sql/_kbOdgEbHEeKw_KtXikBFrg/34" xmlns:uml="http://www.eclipse.org/uml2/4.0.0/UML" xsi:schemaLocation="http:///schemas/pyegg/_m3LEwPJqEeC2FJWWHfGcuA/17 uml_profiles/pyegg.profile.uml#_m3OIEPJqEeC2FJWWHfGcuA http:///schemas/sql/_kbOdgEbHEeKw_KtXikBFrg/34 uml_profiles/sql.profile.uml#_kbPEkEbHEeKw_KtXikBFrg">
+<xmi:XMI xmi:version="2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:pyegg="http:///schemas/pyegg/_qPw84FydEeKx8cgmcB0BHg/26" xmlns:sql="http:///schemas/sql/_kbOdgEbHEeKw_KtXikBFrg/34" xmlns:uml="http://www.eclipse.org/uml2/4.0.0/UML" xsi:schemaLocation="http:///schemas/pyegg/_qPw84FydEeKx8cgmcB0BHg/26 uml_profiles/pyegg.profile.uml#_qPw84VydEeKx8cgmcB0BHg http:///schemas/sql/_kbOdgEbHEeKw_KtXikBFrg/34 uml_profiles/sql.profile.uml#_kbPEkEbHEeKw_KtXikBFrg">
   <uml:Model xmi:id="_rxHwYFyQEeG1mLF7jMwarw" name="model">
-    <packageImport xmi:id="_W7Ey0NhIEeG3YaatKuZj6A">
+    <packageImport xmi:id="_kfRX0Gh4EeKkINfLraJF-A">
       <importedPackage xmi:type="uml:Model" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#_0"/>
     </packageImport>
-    <packageImport xmi:id="_SC3jkNiREeG3YaatKuZj6A">
-      <importedPackage xmi:type="uml:Model" href="pathmap://UML_LIBRARIES/XMLPrimitiveTypes.library.uml#_0"/>
-    </packageImport>
     <packagedElement xmi:type="uml:Package" xmi:id="_0vR-MFyQEeG1mLF7jMwarw" name="agx.testpackage.sql">
-      <packagedElement xmi:type="uml:Package" xmi:id="_Ygic8NgVEeGgbbtOgTBdsg" name="personal">
-        <packagedElement xmi:type="uml:Class" xmi:id="_zNNdoNhGEeG3YaatKuZj6A" name="Person">
-          <ownedAttribute xmi:id="_-BQ2ENhGEeG3YaatKuZj6A" name="firstname">
-            <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
-          </ownedAttribute>
-          <ownedAttribute xmi:id="_BZkOoNhHEeG3YaatKuZj6A" name="lastname">
-            <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
-          </ownedAttribute>
-          <ownedAttribute xmi:id="__-mwENiUEeG3YaatKuZj6A" name="addresses" type="_pgBqMNiUEeG3YaatKuZj6A" association="__-nXINiUEeG3YaatKuZj6A">
-            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="__-mwEtiUEeG3YaatKuZj6A"/>
-            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="__-mwEdiUEeG3YaatKuZj6A" value="*"/>
-          </ownedAttribute>
-          <ownedAttribute xmi:id="_EIQSsNlpEeG3YaatKuZj6A" name="id">
+      <packagedElement xmi:type="uml:Package" xmi:id="_Ozn6MGZIEeKT04VB74JCIg" name="personal">
+        <packagedElement xmi:type="uml:Class" xmi:id="_Ptp5gGZIEeKT04VB74JCIg" name="Person">
+          <ownedAttribute xmi:id="_-w8KQGh3EeKkINfLraJF-A" name="id" visibility="public">
             <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_BaHL8Gh4EeKkINfLraJF-A" value="1"/>
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_BaTZMGh4EeKkINfLraJF-A" value="1"/>
+            <defaultValue xmi:type="uml:LiteralString" xmi:id="_BaV1cGh4EeKkINfLraJF-A">
+              <value xsi:nil="true"/>
+            </defaultValue>
+          </ownedAttribute>
+          <ownedAttribute xmi:id="_P3_8YGh5EeKkINfLraJF-A" name="firstname" visibility="public">
+            <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_QuSEIGh5EeKkINfLraJF-A" value="1"/>
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_QuT5UGh5EeKkINfLraJF-A" value="1"/>
+            <defaultValue xmi:type="uml:LiteralString" xmi:id="_QuVHcGh5EeKkINfLraJF-A">
+              <value xsi:nil="true"/>
+            </defaultValue>
+          </ownedAttribute>
+          <ownedAttribute xmi:id="_KbjWQGiDEeKkINfLraJF-A" name="lastname" visibility="public">
+            <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_R8YDYGiDEeKkINfLraJF-A" value="1"/>
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_R8Z4kGiDEeKkINfLraJF-A" value="1"/>
+            <defaultValue xmi:type="uml:LiteralString" xmi:id="_R8c74GiDEeKkINfLraJF-A">
+              <value xsi:nil="true"/>
+            </defaultValue>
+          </ownedAttribute>
+          <ownedAttribute xmi:id="_KqqhkGiJEeKkINfLraJF-A" name="addresses" type="_VKOfcGiDEeKkINfLraJF-A" aggregation="composite" association="_KqrIoGiJEeKkINfLraJF-A">
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_KqqhkWiJEeKkINfLraJF-A" value="1"/>
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_KqqhkmiJEeKkINfLraJF-A" value="1"/>
           </ownedAttribute>
         </packagedElement>
-        <packagedElement xmi:type="uml:Class" xmi:id="_pgBqMNiUEeG3YaatKuZj6A" name="Address">
-          <ownedAttribute xmi:id="_r6jy8NiUEeG3YaatKuZj6A" name="street">
-            <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
-          </ownedAttribute>
-          <ownedAttribute xmi:id="_t6uT4NiUEeG3YaatKuZj6A" name="city">
-            <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
-          </ownedAttribute>
-          <ownedAttribute xmi:id="_vZhNINiUEeG3YaatKuZj6A" name="country">
-            <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
-          </ownedAttribute>
-          <ownedAttribute xmi:id="_4H_ZINiUEeG3YaatKuZj6A" name="zip">
-            <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
-          </ownedAttribute>
-          <ownedAttribute xmi:id="_eKsg4NlpEeG3YaatKuZj6A" name="id">
+        <packagedElement xmi:type="uml:Class" xmi:id="_VKOfcGiDEeKkINfLraJF-A" name="Address">
+          <ownedAttribute xmi:id="_ZWY94GiDEeKkINfLraJF-A" name="id">
             <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
           </ownedAttribute>
+          <ownedAttribute xmi:id="_kOKmcGiIEeKkINfLraJF-A" name="street" visibility="public">
+            <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_k02zAGiIEeKkINfLraJF-A" value="1"/>
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_k03aEGiIEeKkINfLraJF-A" value="1"/>
+            <defaultValue xmi:type="uml:LiteralString" xmi:id="_k04BIGiIEeKkINfLraJF-A">
+              <value xsi:nil="true"/>
+            </defaultValue>
+          </ownedAttribute>
+          <ownedAttribute xmi:id="_lLM2cGiIEeKkINfLraJF-A" name="city" visibility="public">
+            <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_lfAjQGiIEeKkINfLraJF-A" value="1"/>
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_lfBKUGiIEeKkINfLraJF-A" value="1"/>
+            <defaultValue xmi:type="uml:LiteralString" xmi:id="_lfCYcGiIEeKkINfLraJF-A">
+              <value xsi:nil="true"/>
+            </defaultValue>
+          </ownedAttribute>
+          <ownedAttribute xmi:id="_mj1dUGiIEeKkINfLraJF-A" name="country" visibility="public">
+            <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_m290sGiIEeKkINfLraJF-A" value="1"/>
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_m2-bwGiIEeKkINfLraJF-A" value="1"/>
+            <defaultValue xmi:type="uml:LiteralString" xmi:id="_m2_C0GiIEeKkINfLraJF-A">
+              <value xsi:nil="true"/>
+            </defaultValue>
+          </ownedAttribute>
+          <ownedAttribute xmi:id="_nCXMYGiIEeKkINfLraJF-A" name="zip" visibility="public">
+            <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_nbbMoGiIEeKkINfLraJF-A" value="1"/>
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_nbcawGiIEeKkINfLraJF-A" value="1"/>
+            <defaultValue xmi:type="uml:LiteralString" xmi:id="_nbdo4GiIEeKkINfLraJF-A">
+              <value xsi:nil="true"/>
+            </defaultValue>
+          </ownedAttribute>
         </packagedElement>
-        <packagedElement xmi:type="uml:Association" xmi:id="__-nXINiUEeG3YaatKuZj6A" name="person_address_1" memberEnd="__-nXIdiUEeG3YaatKuZj6A __-mwENiUEeG3YaatKuZj6A">
-          <ownedEnd xmi:id="__-nXIdiUEeG3YaatKuZj6A" name="person" type="_zNNdoNhGEeG3YaatKuZj6A" association="__-nXINiUEeG3YaatKuZj6A">
-            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="__-nXI9iUEeG3YaatKuZj6A" value="1"/>
-            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="__-nXItiUEeG3YaatKuZj6A" value="1"/>
+        <packagedElement xmi:type="uml:Association" xmi:id="_KqrIoGiJEeKkINfLraJF-A" name="person_address_1" memberEnd="_KqrIoWiJEeKkINfLraJF-A _KqqhkGiJEeKkINfLraJF-A">
+          <ownedEnd xmi:id="_KqrIoWiJEeKkINfLraJF-A" name="person" type="_Ptp5gGZIEeKT04VB74JCIg" association="_KqrIoGiJEeKkINfLraJF-A">
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_KqrIomiJEeKkINfLraJF-A" value="1"/>
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_KqrIo2iJEeKkINfLraJF-A" value="1"/>
           </ownedEnd>
         </packagedElement>
-      </packagedElement>
-      <packagedElement xmi:type="uml:Class" xmi:id="_oEaScNkxEeG3YaatKuZj6A" name="Company">
-        <ownedAttribute xmi:id="_wixl4NkxEeG3YaatKuZj6A" name="name">
-          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
-        </ownedAttribute>
       </packagedElement>
     </packagedElement>
     <profileApplication xmi:id="_zZ1OMFyQEeG1mLF7jMwarw">
       <eAnnotations xmi:id="_zaNBoFyQEeG1mLF7jMwarw" source="http://www.eclipse.org/uml2/2.0.0/UML">
-        <references xmi:type="ecore:EPackage" href="uml_profiles/pyegg.profile.uml#_m3OIEPJqEeC2FJWWHfGcuA"/>
+        <references xmi:type="ecore:EPackage" href="uml_profiles/pyegg.profile.uml#_qPw84VydEeKx8cgmcB0BHg"/>
       </eAnnotations>
       <appliedProfile href="uml_profiles/pyegg.profile.uml#_HHBJsNqqEd6cif0axL0c4w"/>
     </profileApplication>
-    <profileApplication xmi:id="_xxS5QNhGEeG3YaatKuZj6A">
-      <eAnnotations xmi:id="_xyMRINhGEeG3YaatKuZj6A" source="http://www.eclipse.org/uml2/2.0.0/UML">
+    <profileApplication xmi:id="_xsA7YGh3EeKkINfLraJF-A">
+      <eAnnotations xmi:id="_xsk8EGh3EeKkINfLraJF-A" source="http://www.eclipse.org/uml2/2.0.0/UML">
         <references xmi:type="ecore:EPackage" href="uml_profiles/sql.profile.uml#_kbPEkEbHEeKw_KtXikBFrg"/>
       </eAnnotations>
       <appliedProfile href="uml_profiles/sql.profile.uml#_f6v-ANgQEeGgbbtOgTBdsg"/>
     </profileApplication>
   </uml:Model>
   <pyegg:pyegg xmi:id="_3P7WAFyQEeG1mLF7jMwarw" base_Package="_0vR-MFyQEeG1mLF7jMwarw"/>
-  <pyegg:pymodule xmi:id="_cd8GoNgVEeGgbbtOgTBdsg" base_Package="_Ygic8NgVEeGgbbtOgTBdsg"/>
-  <sql:sql_content xmi:id="_7mWS0NhGEeG3YaatKuZj6A" base_Class="_zNNdoNhGEeG3YaatKuZj6A"/>
-  <sql:sql_content xmi:id="_9hDIgNiUEeG3YaatKuZj6A" base_Class="_pgBqMNiUEeG3YaatKuZj6A"/>
-  <sql:sql_content xmi:id="_uWIIINkxEeG3YaatKuZj6A" base_Class="_oEaScNkxEeG3YaatKuZj6A"/>
-  <sql:primary xmi:id="_IReK0NlpEeG3YaatKuZj6A" base_Property="_EIQSsNlpEeG3YaatKuZj6A"/>
-  <sql:primary xmi:id="_iTwA8NlpEeG3YaatKuZj6A" base_Property="_eKsg4NlpEeG3YaatKuZj6A"/>
+  <pyegg:pymodule xmi:id="_NHUuAGbYEeKT04VB74JCIg" base_Package="_Ozn6MGZIEeKT04VB74JCIg"/>
+  <sql:primary xmi:id="_BuJFwGh5EeKkINfLraJF-A" base_Property="_-w8KQGh3EeKkINfLraJF-A"/>
+  <sql:sql_content xmi:id="_cJmQ4Gh5EeKkINfLraJF-A" base_Class="_Ptp5gGZIEeKT04VB74JCIg"/>
+  <sql:primary xmi:id="_fgR7AGiIEeKkINfLraJF-A" base_Property="_ZWY94GiDEeKkINfLraJF-A"/>
+  <sql:sql_content xmi:id="_JHWUsGiJEeKkINfLraJF-A" base_Class="_VKOfcGiDEeKkINfLraJF-A"/>
 </xmi:XMI>
