@@ -6,4 +6,4 @@ files=model.di;\
     model.uml.agx;\
 
 title=SQL Product
-description=Simple SQL content model with 2 sql_content classess
+description=A Simple SQL content model with two sql_content classes.
