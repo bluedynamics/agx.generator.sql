@@ -2,3 +2,4 @@
 *.pyo
 src/agx.generator.sql.egg-info
 src/agx/generator/sql/testing/data/agx.generator.sql-sample
+dist/
