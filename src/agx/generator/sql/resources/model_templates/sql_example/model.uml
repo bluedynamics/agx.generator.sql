@@ -94,10 +94,10 @@
       <appliedProfile href="uml_profiles/sql.profile.uml#_f6v-ANgQEeGgbbtOgTBdsg"/>
     </profileApplication>
   </uml:Model>
-  <pyegg:pyegg xmi:id="_3P7WAFyQEeG1mLF7jMwarw" base_Package="_0vR-MFyQEeG1mLF7jMwarw"/>
   <pyegg:pymodule xmi:id="_NHUuAGbYEeKT04VB74JCIg" base_Package="_Ozn6MGZIEeKT04VB74JCIg"/>
   <sql:primary xmi:id="_BuJFwGh5EeKkINfLraJF-A" base_Property="_-w8KQGh3EeKkINfLraJF-A"/>
   <sql:sql_content xmi:id="_cJmQ4Gh5EeKkINfLraJF-A" base_Class="_Ptp5gGZIEeKT04VB74JCIg"/>
   <sql:primary xmi:id="_fgR7AGiIEeKkINfLraJF-A" base_Property="_ZWY94GiDEeKkINfLraJF-A"/>
   <sql:sql_content xmi:id="_JHWUsGiJEeKkINfLraJF-A" base_Class="_VKOfcGiDEeKkINfLraJF-A"/>
+  <pyegg:pyegg xmi:id="_9fugQIAAEeKVHppgZW-04Q" base_Package="_0vR-MFyQEeG1mLF7jMwarw"/>
 </xmi:XMI>
