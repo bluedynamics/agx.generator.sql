@@ -8,6 +8,7 @@ If you use Zope, you can get the session this way:
 If you use the package standalone, do it this way:
 
     >>> from zope.configuration.xmlconfig import XMLConfig
+    >>> import zope.component.event  #neccesary to initialize subscription system
     >>> import transaction
     >>> import {{packagename}}
     >>> XMLConfig('configure.zcml',{{packagename}})()
@@ -18,6 +19,6 @@ If you use the package standalone, do it this way:
     >>> from z3c.saconfig import named_scoped_session
     >>> Session = named_scoped_session('{{session_name}}')
     >>> session=Session()
-    >>> session.add(Person(name='Donald Duck')) #assume we have a Person class
+    >>> session.add(Person(firstname='Donald', lastname='Duck')) #assume we have a Person class
 
     >>> transaction.commit()
