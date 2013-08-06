@@ -305,11 +305,16 @@ def sqlrelations_collect(self, source, target):
     if not detailclass.stereotype('sql:sql_content'):
         return
 
-    mastertok = token(str(masterclass.uuid), True, outgoing_relations=[])
+    mastertok = token(str(masterclass.uuid), True, outgoing_relations=[],incoming_relations=[])
     detailtok = token(str(detailclass.uuid), True, incoming_relations=[])
-    detailtok.incoming_relations.append(detail)
-    mastertok.outgoing_relations.append(master)
-
+    if detail.aggregationkind in ['composite','aggregation']:
+        #for aggregations the arrow points from the master to the detail
+        detailtok.incoming_relations.append(detail)
+        mastertok.outgoing_relations.append(master)
+    else:
+        #simple FK relation, so other direction
+        import pdb;pdb.set_trace()
+        mastertok.incoming_relations.append(master)
 
 @handler('sqlrelations_foreignkeys', 'uml2fs', 'connectorgenerator',
          'sqlcontent', order=8)
@@ -333,11 +338,18 @@ def sqlrelations_foreignkeys(self, source, target):
 
     incoming_relations = token(str(source.uuid),
                                True, incoming_relations=[]).incoming_relations
+                               
+    import pdb;pdb.set_trace()
     for relend in incoming_relations:
-        klass = relend.parent
-        otherend = relend.association.memberEnds[1]
+        klass = relend.type
+        
+        #fetch the opposite relation end
+        if relend==relend.association.memberEnds[0]:
+            otherend = relend.association.memberEnds[1]
+        else:
+            otherend = relend.association.memberEnds[0]
         otherclass = otherend.type
-        pks = get_pks(klass)
+        pks = get_pks(otherclass)
 
         joins = []
         for pk in pks:
