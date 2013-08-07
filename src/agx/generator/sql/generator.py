@@ -313,8 +313,14 @@ def sqlrelations_collect(self, source, target):
         mastertok.outgoing_relations.append(master)
     else:
         #simple FK relation, so other direction
-        import pdb;pdb.set_trace()
         mastertok.incoming_relations.append(master)
+        
+def get_fkname(klass, pkname, otherend):
+    propnames=[p.name for p in klass.filtereditems(IProperty)]
+    if 1 or pkname in propnames:
+        return '%s_%s' % (otherend.name, pkname)
+    else:
+        return pkname
 
 @handler('sqlrelations_foreignkeys', 'uml2fs', 'connectorgenerator',
          'sqlcontent', order=8)
@@ -339,7 +345,6 @@ def sqlrelations_foreignkeys(self, source, target):
     incoming_relations = token(str(source.uuid),
                                True, incoming_relations=[]).incoming_relations
                                
-    import pdb;pdb.set_trace()
     for relend in incoming_relations:
         klass = relend.type
         
@@ -354,7 +359,8 @@ def sqlrelations_foreignkeys(self, source, target):
         joins = []
         for pk in pks:
             pkname = get_colid(pk)
-            fkname = '%s_%s' % (otherend.name, pkname)
+            #import pdb;pdb.set_trace()
+            fkname = get_fkname(source, pkname, otherend)
             # this stmt will be attached to otherend in order to be used
             # for the join in the relationship stmt
             joinstmt = '%s.%s == %s.%s' % (
@@ -382,8 +388,9 @@ def sqlrelations_foreignkeys(self, source, target):
                     if import_from:
                         imps = Imports(module)
                         imps.set(import_from, [[typename, None]])
-
-                if relend.lowervalue:
+                        
+                #import pdb;pdb.set_trace()
+                if relend.aggregationkind=='composite':
                     options['nullable'] = 'False'
                 else:
                     options['nullable'] = 'True'
