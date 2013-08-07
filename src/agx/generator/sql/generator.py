@@ -307,7 +307,7 @@ def sqlrelations_collect(self, source, target):
 
     mastertok = token(str(masterclass.uuid), True, outgoing_relations=[],incoming_relations=[])
     detailtok = token(str(detailclass.uuid), True, incoming_relations=[])
-    if detail.aggregationkind in ['composite','aggregation']:
+    if detail.aggregationkind in ['composite','aggregation','shared']:
         #for aggregations the arrow points from the master to the detail
         detailtok.incoming_relations.append(detail)
         mastertok.outgoing_relations.append(master)
@@ -317,7 +317,10 @@ def sqlrelations_collect(self, source, target):
         
 def get_fkname(klass, pkname, otherend):
     propnames=[p.name for p in klass.filtereditems(IProperty)]
-    if 1 or pkname in propnames:
+    
+    #we have to look if the a prop with the same name is
+    #either defined locally or by an inherited pk
+    if pkname in propnames or pkname in [pk.name for pk in get_pks(klass)]:
         return '%s_%s' % (otherend.name, pkname)
     else:
         return pkname
@@ -627,7 +630,7 @@ def sql_config(self, source, target):
 
     engine_name = tgv.direct('engine_name', 'sql:z3c_saconfig', 'default')
     engine_url = tgv.direct(
-        'engine_url', 'sql:z3c_saconfig', 'sqlite:///memory')
+        'engine_url', 'sql:z3c_saconfig', 'sqlite:///test.db')
     session_name = tgv.direct('session_name', 'sql:z3c_saconfig', 'default')
 
     zcautils.set_zcml_directive(
@@ -641,7 +644,7 @@ def sql_config(self, source, target):
         session_name, engine=engine_name)
 
     # write the readme
-    fname = 'README-sqlalchemy.rst'
+    fname = 'sample-sqlalchemy.py'
     readme = JinjaTemplate()
     readme.template = templatepath(fname + '.jinja')
     readme.params = {
