@@ -1,0 +1,31 @@
+##If you use Zope, you can get the session this way:
+
+#from z3c.saconfig import named_scoped_session
+#Session = named_scoped_session('{{session_name}}')
+#session=Session()
+#session.add(Person(name='Donald Duck')) #assume we have a Person class
+
+##If you use the package standalone, do it that way:
+
+from zope.configuration.xmlconfig import XMLConfig
+import zope.component.event  #neccesary to initialize subscription system
+import transaction
+import {{packagename}}
+XMLConfig('configure.zcml',{{packagename}})()
+
+#assume we have a Person class in a module 'person'
+from {{packagename}}.personal import Person, Company, Address
+
+from z3c.saconfig import named_scoped_session
+Session = named_scoped_session('{{session_name}}')
+session=Session()
+pers=Person(firstname='Donald', lastname='Duck')
+session.add(pers) #assume we have a Person class
+
+comp=Company(name='ACME')
+session.add(comp)
+pers.addresses.append(Address(street='Erpelstrasse',city='Entenhausen'))
+#comp.persons.append(pers)
+pers.company=comp
+
+transaction.commit()
