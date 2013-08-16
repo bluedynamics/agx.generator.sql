@@ -20,6 +20,7 @@ from node.ext.uml.interfaces import (
     IDependency,
     IProperty,
     IAssociation,
+    IAssociationClass,
 )
 from node.ext.python.utils import Imports
 from node.ext.uml.utils import (
@@ -69,6 +70,7 @@ registerScope('sqljoinedtableinheritance', 'uml2fs',
               [IClass], SqlJoinedTableInheritanceScope)
 registerScope('sql_config', 'uml2fs', [IPackage] , SqlSAConfigScope)
 registerScope('sqlassociation', 'uml2fs', [IAssociation], Scope)
+registerScope('sqlassociationclass', 'uml2fs', [IAssociationClass], Scope)
 
 
 def templatepath(name):
@@ -307,7 +309,9 @@ def sqlrelations_collect(self, source, target):
 
     mastertok = token(str(masterclass.uuid), True, outgoing_relations=[],incoming_relations=[])
     detailtok = token(str(detailclass.uuid), True, incoming_relations=[])
-    if detail.aggregationkind in ['composite','aggregation','shared']:
+    
+    if detail.aggregationkind in ['composite','aggregation','shared'] or \
+            IAssociationClass.providedBy(source):
         #for aggregations the arrow points from the master to the detail
         detailtok.incoming_relations.append(detail)
         mastertok.outgoing_relations.append(master)
@@ -315,15 +319,70 @@ def sqlrelations_collect(self, source, target):
         #simple FK relation, so other direction
         mastertok.incoming_relations.append(master)
         
-def get_fkname(klass, pkname, otherend):
+def get_fkname(klass, pkname, otherendname, force_fullname=False):
     propnames=[p.name for p in klass.filtereditems(IProperty)]
     
     #we have to look if the a prop with the same name is
     #either defined locally or by an inherited pk
-    if pkname in propnames or pkname in [pk.name for pk in get_pks(klass)]:
-        return '%s_%s' % (otherend.name, pkname)
+    if force_fullname or pkname in propnames or pkname in [pk.name for pk in get_pks(klass)]:
+        return '%s_%s' % (otherendname, pkname)
     else:
         return pkname
+
+def calculate_joins(source, targetclass, otherclass, otherendname, nullable=False, force_fullname=False):
+    joins = []
+    pks = get_pks(otherclass)
+
+    try:
+        lastattr = targetclass.attributes()[-1]
+    except IndexError:
+        lastattr = None
+
+    for pk in pks:
+        pkname = get_colid(pk)
+        #import pdb;pdb.set_trace()
+        fkname = get_fkname(source, pkname, otherendname, force_fullname=force_fullname)
+        # this stmt will be attached to otherend in order to be used
+        # for the join in the relationship stmt
+        joinstmt = '%s.%s == %s.%s' % (
+            source.name, fkname, otherclass.name, pkname)
+        if not targetclass.attributes(fkname):
+            attr = Attribute()
+            attr.__name__ = str(attr.uuid)
+            if lastattr:
+                targetclass.insertafter(attr, lastattr)
+            else:
+                targetclass.insertfirst(attr)
+
+            attr.targets = [fkname]
+            fk = "ForeignKey('%s.%s')" % (
+                get_tablename(otherclass), pkname)
+            options = {}
+            typename = pk.type.name
+            # handle custom types (PrimitveType)
+            if pk.type.stereotype('sql:sql_type'):
+                tgv = TaggedValues(pk.type)
+                typename = tgv.direct(
+                    'classname', 'sql:sql_type', typename)
+                import_from = tgv.direct(
+                    'import_from', 'sql:sql_type', None)
+                if import_from:
+                    imps = Imports(module)
+                    imps.set(import_from, [[typename, None]])
+                    
+            if nullable:
+                options['nullable'] = 'True'
+            else:
+                options['nullable'] = 'False'
+
+            oparray = []
+            for k in options:
+                oparray.append('%s = %s' % (k, options[k]))
+            attr.value = 'Column(%s, %s, %s)' % (
+                typename, fk, ', '.join(oparray))
+
+        joins.append(joinstmt)
+        return joins
 
 @handler('sqlrelations_foreignkeys', 'uml2fs', 'connectorgenerator',
          'sqlcontent', order=8)
@@ -340,10 +399,6 @@ def sqlrelations_foreignkeys(self, source, target):
     # get the last attribute and append there the foreignkeys
     attrs = targetclass.attributes()
     attrnames = [att.targets[0] for att in attrs]
-    try:
-        lastattr = targetclass.attributes()[-1]
-    except IndexError:
-        lastattr = None
 
     incoming_relations = token(str(source.uuid),
                                True, incoming_relations=[]).incoming_relations
@@ -351,61 +406,21 @@ def sqlrelations_foreignkeys(self, source, target):
     for relend in incoming_relations:
         klass = relend.type
         
+        #no foreign keys needed for Association Classes
+        if IAssociationClass.providedBy(relend.association):
+            continue
+        
         #fetch the opposite relation end
         if relend==relend.association.memberEnds[0]:
             otherend = relend.association.memberEnds[1]
         else:
             otherend = relend.association.memberEnds[0]
         otherclass = otherend.type
-        pks = get_pks(otherclass)
+        
+        nullable = not relend.aggregationkind=='composite'
 
-        joins = []
-        for pk in pks:
-            pkname = get_colid(pk)
-            #import pdb;pdb.set_trace()
-            fkname = get_fkname(source, pkname, otherend)
-            # this stmt will be attached to otherend in order to be used
-            # for the join in the relationship stmt
-            joinstmt = '%s.%s == %s.%s' % (
-                source.name, fkname, otherclass.name, pkname)
-            if fkname not in attrnames:
-                attr = Attribute()
-                attr.__name__ = str(attr.uuid)
-                if lastattr:
-                    targetclass.insertafter(attr, lastattr)
-                else:
-                    targetclass.insertfirst(attr)
-
-                attr.targets = [fkname]
-                fk = "ForeignKey('%s.%s')" % (
-                    get_tablename(otherclass), pkname)
-                options = {}
-                typename = pk.type.name
-                # handle custom types (PrimitveType)
-                if pk.type.stereotype('sql:sql_type'):
-                    tgv = TaggedValues(pk.type)
-                    typename = tgv.direct(
-                        'classname', 'sql:sql_type', typename)
-                    import_from = tgv.direct(
-                        'import_from', 'sql:sql_type', None)
-                    if import_from:
-                        imps = Imports(module)
-                        imps.set(import_from, [[typename, None]])
-                        
-                #import pdb;pdb.set_trace()
-                if relend.aggregationkind=='composite':
-                    options['nullable'] = 'False'
-                else:
-                    options['nullable'] = 'True'
-
-                oparray = []
-                for k in options:
-                    oparray.append('%s = %s' % (k, options[k]))
-                attr.value = 'Column(%s, %s, %s)' % (
-                    typename, fk, ', '.join(oparray))
-
-            joins.append(joinstmt)
-            token(str(otherend.uuid), True, joins=joins)
+        joins=calculate_joins(source, targetclass, otherclass, otherend.name, nullable = nullable)
+        token(str(otherend.uuid), True, joins=joins)
 
 
 @handler('sqlrelations_relations', 'uml2fs', 'semanticsgenerator',
@@ -438,7 +453,12 @@ def sqlrelations_relations(self, source, target):
 
     for relend in outgoing_relations:
         assoc = relend.association
-        klass = relend.parent
+        
+        #Association classes are nadled seperately
+        #once we support association tables, we have to handle it here
+        if IAssociationClass.providedBy(assoc):
+            continue
+        klass = relend.type
         otherend = relend.association.memberEnds[0]
         otherclass = otherend.type
         relname = otherend.name
@@ -500,9 +520,10 @@ def sqlrelations_relations(self, source, target):
                              [['attribute_mapped_collection', None]])
 
             # make the primaryjoin stmt
-            tok = token(str(relend.uuid), True, joins=[])
-            if tok.joins:
-                options['primaryjoin'] = "'%s'" % ','.join(tok.joins)
+            if not IAssociationClass.providedBy(relend.association):
+                tok = token(str(relend.uuid), True, joins=[])
+                if tok.joins:
+                    options['primaryjoin'] = "'%s'" % ','.join(tok.joins)
 
             # XXX: .navigable isn't yet correctly parsed from uml, thus the
             # hardcoding
@@ -520,6 +541,28 @@ def sqlrelations_relations(self, source, target):
             attr.value = "relationship('%s', %s)" % (
                 otherclass.name, ', '.join(oparray))
 
+@handler('sqlassociationclasses_foreingkeys', 'uml2fs', 'connectorgenerator',
+         'sqlassociationclass', order=8)
+def sqlassociationclasses_foreingkeys(self, source, target):
+    #generate the foreign keys + relations from the assoc class to
+    #its relation ends
+    end0 = source.memberEnds[0]
+    klass0 = end0.type
+    end1 = source.memberEnds[1]
+    klass1 = end1.type
+    targetclass=read_target_node(source,target.target)
+
+    if not klass0.stereotype('sql:sql_content'):
+        return
+    if not klass1.stereotype('sql:sql_content'):
+        return
+
+#    import pdb;pdb.set_trace()
+    joins0=calculate_joins(source, targetclass, klass0, end0.name, nullable = False, force_fullname=True)
+#    token(str(otherend.uuid), True, joins=joins)
+
+    joins1=calculate_joins(source, targetclass, klass1, end1.name, nullable = False, force_fullname=True)
+#    print joins0,joins1
 
 @handler('sqlattribute', 'uml2fs', 'hierarchygenerator',
          'pyattribute', order=41)
