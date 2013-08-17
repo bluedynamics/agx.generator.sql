@@ -28,6 +28,10 @@
             <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_KqqhkWiJEeKkINfLraJF-A" value="1"/>
             <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_KqqhkmiJEeKkINfLraJF-A" value="1"/>
           </ownedAttribute>
+          <ownedAttribute xmi:id="_cAFKsAc5EeOOGYiy4F6p2Q" name="employers" type="_8RyZAP6dEeKT9LjGQcNwEg" association="_cAGY0Ac5EeOOGYiy4F6p2Q">
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_cAFxwAc5EeOOGYiy4F6p2Q" value="1"/>
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_cAFxwQc5EeOOGYiy4F6p2Q" value="1"/>
+          </ownedAttribute>
         </packagedElement>
         <packagedElement xmi:type="uml:Class" xmi:id="_VKOfcGiDEeKkINfLraJF-A" name="Address">
           <ownedAttribute xmi:id="_ZWY94GiDEeKkINfLraJF-A" name="id">
@@ -89,10 +93,6 @@
               <value xsi:nil="true"/>
             </defaultValue>
           </ownedAttribute>
-          <ownedAttribute xmi:id="_tS3X0P87EeKT9LjGQcNwEg" name="persons" type="_Ptp5gGZIEeKT04VB74JCIg" aggregation="shared" association="_tS3-4P87EeKT9LjGQcNwEg">
-            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_tS3X0f87EeKT9LjGQcNwEg"/>
-            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_tS3X0v87EeKT9LjGQcNwEg" value="*"/>
-          </ownedAttribute>
         </packagedElement>
         <packagedElement xmi:type="uml:Class" xmi:id="_AtRHMP7dEeKT9LjGQcNwEg" name="SomeBase">
           <ownedAttribute xmi:id="_IIs-AP7dEeKT9LjGQcNwEg" name="id" visibility="public">
@@ -104,10 +104,13 @@
             </defaultValue>
           </ownedAttribute>
         </packagedElement>
-        <packagedElement xmi:type="uml:Association" xmi:id="_tS3-4P87EeKT9LjGQcNwEg" name="company_person_1" memberEnd="_tS3-4f87EeKT9LjGQcNwEg _tS3X0P87EeKT9LjGQcNwEg">
-          <ownedEnd xmi:id="_tS3-4f87EeKT9LjGQcNwEg" name="company" type="_8RyZAP6dEeKT9LjGQcNwEg" association="_tS3-4P87EeKT9LjGQcNwEg">
-            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_tS3-4v87EeKT9LjGQcNwEg" value="1"/>
-            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_tS3-4_87EeKT9LjGQcNwEg" value="1"/>
+        <packagedElement xmi:type="uml:AssociationClass" xmi:id="_cAGY0Ac5EeOOGYiy4F6p2Q" name="Employment" memberEnd="_cAGY0Qc5EeOOGYiy4F6p2Q _cAFKsAc5EeOOGYiy4F6p2Q">
+          <ownedAttribute xmi:id="_s7MA8Ac5EeOOGYiy4F6p2Q" name="salary">
+            <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+          </ownedAttribute>
+          <ownedEnd xmi:id="_cAGY0Qc5EeOOGYiy4F6p2Q" name="employees" type="_Ptp5gGZIEeKT04VB74JCIg" association="_cAGY0Ac5EeOOGYiy4F6p2Q">
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_cAGY0gc5EeOOGYiy4F6p2Q" value="1"/>
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_cAGY0wc5EeOOGYiy4F6p2Q" value="1"/>
           </ownedEnd>
         </packagedElement>
       </packagedElement>
@@ -137,4 +140,5 @@
   <sql:joined_table_inheritance xmi:id="_f-HT8P7dEeKT9LjGQcNwEg" base_Class="_AtRHMP7dEeKT9LjGQcNwEg"/>
   <sql:z3c_saconfig xmi:id="_eSH8IP7xEeKT9LjGQcNwEg" base_Package="_0vR-MFyQEeG1mLF7jMwarw"/>
   <pyegg:simple_buildout xmi:id="_uOk6gP8tEeKT9LjGQcNwEg" base_Package="_0vR-MFyQEeG1mLF7jMwarw"/>
+  <sql:sql_content xmi:id="_mkMCoAc5EeOOGYiy4F6p2Q" base_Class="_cAGY0Ac5EeOOGYiy4F6p2Q"/>
 </xmi:XMI>

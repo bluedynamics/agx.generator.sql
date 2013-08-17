@@ -583,11 +583,11 @@ def sqlassociationclasses(self, source, target):
     templ='''association_proxy("%s", "%s", 
                             creator=lambda c: %s(%s=c))'''
     for klass,targetklass_, end, otherend in ((klass0,targetklass1, end0, end1), (klass1, targetklass0, end1, end0)):
-        relname=end.name+'_assocs'
+        relname=source.name.lower()+'s' #end.name+'_assocs'
         proxyname=end.name
         token(str(end.uuid),True,relname=relname)
         if not targetklass_.attributes(proxyname):
-            code=templ % (relname, get_tablename(klass), source.name, otherend.name)
+            code=templ % (relname, get_tablename(klass), source.name, end.name)
             targetklass_.insertafterlastattr(Attribute(proxyname, code))
     
     #import association_proxy
@@ -721,15 +721,16 @@ def sql_config(self, source, target):
 
     # write the readme
     fname = 'sample-sqlalchemy.py'
-    readme = JinjaTemplate()
-    readme.template = templatepath(fname + '.jinja')
-    readme.params = {
-        'engine_name': engine_name,
-        'engine_url': engine_url,
-        'session_name': session_name,
-        'packagename': dotted_path(source),
-    }
-    tg[fname] = readme
+    if fname not in tg.keys():
+        readme = JinjaTemplate()
+        readme.template = templatepath(fname + '.jinja')
+        readme.params = {
+            'engine_name': engine_name,
+            'engine_url': engine_url,
+            'session_name': session_name,
+            'packagename': dotted_path(source),
+        }
+        tg[fname] = readme
 
 
 @handler('sql_dependencies', 'uml2fs', 'semanticsgenerator', 'sql_config')
