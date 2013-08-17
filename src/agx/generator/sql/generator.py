@@ -308,9 +308,12 @@ def sqlrelations_collect(self, source, target):
         return
 
     mastertok = token(str(masterclass.uuid), True, outgoing_relations=[],incoming_relations=[])
-    detailtok = token(str(detailclass.uuid), True, incoming_relations=[])
+    detailtok = token(str(detailclass.uuid), True, outgoing_relations=[],incoming_relations=[])
     
-    if detail.aggregationkind in ['composite','aggregation','shared'] or \
+    if IAssociationClass.providedBy(source):
+        detailtok.outgoing_relations.append(detail)
+        mastertok.outgoing_relations.append(master)
+    elif detail.aggregationkind in ['composite','aggregation','shared'] or \
             IAssociationClass.providedBy(source):
         #for aggregations the arrow points from the master to the detail
         detailtok.incoming_relations.append(detail)
@@ -332,6 +335,7 @@ def get_fkname(klass, pkname, otherendname, force_fullname=False):
 def calculate_joins(source, targetclass, otherclass, otherendname, nullable=False, force_fullname=False):
     joins = []
     pks = get_pks(otherclass)
+    my_pks=get_pks(source)
 
     try:
         lastattr = targetclass.attributes()[-1]
@@ -375,6 +379,9 @@ def calculate_joins(source, targetclass, otherclass, otherendname, nullable=Fals
             else:
                 options['nullable'] = 'False'
 
+            if not my_pks:
+                options['primary_key'] = 'True'
+                
             oparray = []
             for k in options:
                 oparray.append('%s = %s' % (k, options[k]))
@@ -453,16 +460,24 @@ def sqlrelations_relations(self, source, target):
 
     for relend in outgoing_relations:
         assoc = relend.association
-        
-        #Association classes are nadled seperately
+        if relend==relend.association.memberEnds[0]:
+            otherend = relend.association.memberEnds[1]
+        else:
+            otherend = relend.association.memberEnds[0]
+
+        #Association classes are handled seperately
         #once we support association tables, we have to handle it here
-        if IAssociationClass.providedBy(assoc):
-            continue
-        klass = relend.type
-        otherend = relend.association.memberEnds[0]
-        otherclass = otherend.type
-        relname = otherend.name
         tgv = TaggedValues(assoc)
+        if IAssociationClass.providedBy(assoc):
+            # tgv = TaggedValues(otherend) We need to build support for tgvs on 
+            # member ends later
+            klass = relend.type
+            otherclass = relend.association
+            relname = token(str(otherend.uuid), True, relname=otherend.name+'_associations').relname
+        else:
+            klass = relend.type
+            otherclass = otherend.type
+            relname = otherend.name
 
         if relname not in attrnames:
             attr = Attribute()
@@ -541,29 +556,47 @@ def sqlrelations_relations(self, source, target):
             attr.value = "relationship('%s', %s)" % (
                 otherclass.name, ', '.join(oparray))
 
-@handler('sqlassociationclasses_foreingkeys', 'uml2fs', 'connectorgenerator',
+@handler('sqlassociationclasses', 'uml2fs', 'connectorgenerator',
          'sqlassociationclass', order=8)
-def sqlassociationclasses_foreingkeys(self, source, target):
-    #generate the foreign keys + relations from the assoc class to
-    #its relation ends
+def sqlassociationclasses(self, source, target):
+    # generate the foreign keys + relations from the assoc class to
+    # its relation ends
     end0 = source.memberEnds[0]
     klass0 = end0.type
     end1 = source.memberEnds[1]
     klass1 = end1.type
     targetclass=read_target_node(source,target.target)
+    targetklass0=read_target_node(klass0, target.target)
+    targetklass1=read_target_node(klass1, target.target)
+    module=targetclass.parent
 
     if not klass0.stereotype('sql:sql_content'):
         return
     if not klass1.stereotype('sql:sql_content'):
         return
-
-#    import pdb;pdb.set_trace()
+    
+    #generate the foreign key properties
     joins0=calculate_joins(source, targetclass, klass0, end0.name, nullable = False, force_fullname=True)
-#    token(str(otherend.uuid), True, joins=joins)
-
     joins1=calculate_joins(source, targetclass, klass1, end1.name, nullable = False, force_fullname=True)
-#    print joins0,joins1
 
+    #generate the association_proxy attributes
+    templ='''association_proxy("%s", "%s", 
+                            creator=lambda c: %s(%s=c))'''
+    for klass,targetklass_, end, otherend in ((klass0,targetklass1, end0, end1), (klass1, targetklass0, end1, end0)):
+        relname=end.name+'_assocs'
+        proxyname=end.name
+        token(str(end.uuid),True,relname=relname)
+        if not targetklass_.attributes(proxyname):
+            code=templ % (relname, get_tablename(klass), source.name, otherend.name)
+            targetklass_.insertafterlastattr(Attribute(proxyname, code))
+    
+    #import association_proxy
+    imps=Imports(module)
+    imps.set('sqlalchemy.ext.associationproxy','association_proxy')
+#    import pdb;pdb.set_trace()
+    
+
+    
 @handler('sqlattribute', 'uml2fs', 'hierarchygenerator',
          'pyattribute', order=41)
 def pyattribute(self, source, target):
