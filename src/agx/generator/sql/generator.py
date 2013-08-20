@@ -107,6 +107,16 @@ def get_colid(col):
         colid = col.name
     return colid
 
+def get_z3c_saconfig(source):
+    #acquires up for a z3c_saconfig package
+    par = source
+    while par:
+        if par.stereotype('sql:z3c_saconfig'):
+            return par
+        par = par.parent
+
+    return None
+
 
 @handler('sqljoinedtablebaseclass', 'uml2fs', 'connectorgenerator',
          'sqljoinedtableinheritance', order=9)
@@ -145,7 +155,6 @@ def sqlcontentclass(self, source, target):
 
     module = targetclass.parent
     imps = Imports(module)
-    imps.set('sqlalchemy.ext.declarative', [['declarative_base', None]])
     imps.set('sqlalchemy', [['Column', None],
                            ['Integer', None],
                            ['String', None],
@@ -158,10 +167,15 @@ def sqlcontentclass(self, source, target):
     classatts = [att for att in targetclass.filtereditems(IAttribute)]
 
     # generate the Base=declarative_base() statement
-    att = Attribute(['Base'], 'declarative_base()')
-    att.__name__ = 'Base'
-    if not [a for a in globalatts if a.targets == ['Base']]:
-        module.insertafter(att, lastimport)
+    saconfig=get_z3c_saconfig(source)
+    if saconfig:
+        imps.set(dotted_path(saconfig),'Base')
+    else:
+        imps.set('sqlalchemy.ext.declarative', 'declarative_base')
+        att = Attribute(['Base'], 'declarative_base()')
+        att.__name__ = 'Base'
+        if not [a for a in globalatts if a.targets == ['Base']]:
+            module.insertafter(att, lastimport)
 
     # generate the __tablename__ attribute
     if not [a for a in classatts if a.targets == ['__tablename__']]:
@@ -233,31 +247,27 @@ def sqlcontentclass(self, source, target):
 
 
 @handler('sqlcontentclass_engine_created_handler', 'uml2fs',
-         'connectorgenerator', 'sqlcontent', order=11)
+         'connectorgenerator', 'sql_config', order=11)
 def sqlcontentclass_engine_created_handler(self, source, target):
     """create and register the handler for the IEngineCreatedEvent.
     """
     if source.stereotype('pyegg:stub'):
         return
 
-    targetclass = read_target_node(source, target.target)
-    module = targetclass.parent
+    #targetclass = read_target_node(source, target.target)
+    targetpack=read_target_node(source,target.target)
+    module = targetpack['__init__.py']
     imps = Imports(module)
 
     # check if one of the parent packages has the z3c_saconfig stereotype
-    has_z3c_saconfig = False
-    engine_name = None
-    par = source.parent
-    while par:
-        if par.stereotype('sql:z3c_saconfig'):
-            has_z3c_saconfig = True
-            eggtgv=TaggedValues(par)
-            engine_name = eggtgv.direct(
-                'engine_name', 'sql:z3c_saconfig', 'default')
-            break
-        par = par.parent
+    z3c_saconfig=get_z3c_saconfig(source)
+        
     # add engine-created handler
-    if has_z3c_saconfig:
+    if z3c_saconfig:
+        eggtgv=TaggedValues(z3c_saconfig)
+        engine_name = eggtgv.direct(
+                'engine_name', 'sql:z3c_saconfig', 'default')
+        
         globalfuncs = [f for f in module.filtereditems(IFunction)]
         globalfuncnames = [f.functionname for f in globalfuncs]
         if 'engineCreatedHandler' not in globalfuncnames:
@@ -265,8 +275,16 @@ def sqlcontentclass_engine_created_handler(self, source, target):
                      [['IEngineCreatedEvent', None]])
             imps.set('zope', [['component', None]])
             imps.set('z3c.saconfig.interfaces',[['IEngineFactory',None]])
-            att = [att for att in module.filtereditems(IAttribute) \
-                   if att.targets == ['Base']][0]
+            imps.set('sqlalchemy.ext.declarative','declarative_base')
+            #att = [att for att in module.filtereditems(IAttribute) \
+            #       if att.targets == ['Base']][0]
+            bases=module.attributes('Base')
+            if not bases:
+                base=Attribute('Base','declarative_base()')
+                module.insertafterimports(base)
+            else:
+                base=bases[0]
+                   
             ff = Function('engineCreatedHandler')
             # 'engineCreatedHandler'
             ff.__name__ = ff.uuid 
@@ -284,7 +302,7 @@ def sqlcontentclass_engine_created_handler(self, source, target):
             block = Block('\n'.join(block_lines))
             block.__name__ = block.uuid
             ff.insertlast(block)
-            module.insertafter(ff, att)
+            module.insertafter(ff, base)
 
             prov = Block('component.provideHandler(engineCreatedHandler)')
             prov.__name__ = prov.uuid
