@@ -557,7 +557,7 @@ def sqlrelations_relations(self, source, target):
                              [['attribute_mapped_collection', None]])
 
             # make the primaryjoin stmt
-            if not IAssociationClass.providedBy(relend.association):
+            if 1 or not IAssociationClass.providedBy(relend.association):
                 tok = token(str(relend.uuid), True, joins=[])
                 if tok.joins:
                     options['primaryjoin'] = "'%s'" % ','.join(tok.joins)
@@ -604,10 +604,14 @@ def sqlassociationclasses(self, source, target):
     #generate the association_proxy attributes
     templ='''association_proxy("%s", "%s", 
                             creator=lambda c: %s(%s=c))'''
-    for klass,targetklass_, end, otherend in ((klass0,targetklass1, end0, end1), (klass1, targetklass0, end1, end0)):
-        relname=source.name.lower()+'s' #end.name+'_assocs'
+    for klass,targetklass_, end, otherend, joins in ((klass0,targetklass1, end0, end1, joins0), (klass1, targetklass0, end1, end0, joins1)):
+        if end.type != otherend.type:
+            relname=source.name.lower()+'s' 
+        else:
+            relname=end.name+'_assocs'
+            
         proxyname=end.name
-        token(str(end.uuid),True,relname=relname)
+        token(str(end.uuid),True,relname=relname,joins=joins)
         if not targetklass_.attributes(proxyname):
             code=templ % (relname, get_tablename(klass), source.name, end.name)
             targetklass_.insertafterlastattr(Attribute(proxyname, code))
