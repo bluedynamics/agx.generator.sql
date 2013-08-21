@@ -50,6 +50,7 @@ from node.ext.zcml import (
     SimpleDirective,
     ComplexDirective,
 )
+from node.ext.python.nodes import Module
 from node.ext.template import JinjaTemplate
 from node.ext.python import Import
 from agx.generator.pyegg.utils import egg_source
@@ -169,8 +170,11 @@ def sqlcontentclass(self, source, target):
     # generate the Base=declarative_base() statement
     saconfig=get_z3c_saconfig(source)
     if saconfig:
-        imps.set(dotted_path(saconfig),'Base')
+        # if we have a z3c_saconfig setting we import the Base from
+        # the corresponding package
+        imps.set(dotted_path(saconfig)+'.saconfig','Base')
     else:
+        # otherwise we create it by default
         imps.set('sqlalchemy.ext.declarative', 'declarative_base')
         att = Attribute(['Base'], 'declarative_base()')
         att.__name__ = 'Base'
@@ -254,9 +258,9 @@ def sqlcontentclass_engine_created_handler(self, source, target):
     if source.stereotype('pyegg:stub'):
         return
 
-    #targetclass = read_target_node(source, target.target)
     targetpack=read_target_node(source,target.target)
-    module = targetpack['__init__.py']
+    targetpack['saconfig.py']=Module()
+    module = targetpack['saconfig.py']
     imps = Imports(module)
 
     # check if one of the parent packages has the z3c_saconfig stereotype
@@ -737,9 +741,21 @@ def sql_config(self, source, target):
         tg, 'configure.zcml', 'saconfig:session', 'name',
         session_name, engine=engine_name)
 
+@handler('sql_sample', 'uml2fs', 'semanticsgenerator',
+         'pythonegg', order=11)
+def sql_sample(self, source, target):
+    if not source.stereotype('sql:z3c_saconfig'):
+        return
+    root=target.anchor
+    tgv = TaggedValues(source)
+    engine_name = tgv.direct('engine_name', 'sql:z3c_saconfig', 'default')
+    engine_url = tgv.direct(
+        'engine_url', 'sql:z3c_saconfig', 'sqlite:///test.db')
+    session_name = tgv.direct('session_name', 'sql:z3c_saconfig', 'default')
+
     # write the readme
     fname = 'sample-sqlalchemy.py'
-    if fname not in tg.keys():
+    if fname not in root.keys():
         readme = JinjaTemplate()
         readme.template = templatepath(fname + '.jinja')
         readme.params = {
@@ -748,7 +764,7 @@ def sql_config(self, source, target):
             'session_name': session_name,
             'packagename': dotted_path(source),
         }
-        tg[fname] = readme
+        root[fname] = readme
 
 
 @handler('sql_dependencies', 'uml2fs', 'semanticsgenerator', 'sql_config')
