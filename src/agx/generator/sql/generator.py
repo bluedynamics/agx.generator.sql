@@ -63,7 +63,6 @@ from agx.generator.sql.scope import (
     SqlJoinedTableInheritanceScope,
 )
 
-
 registerScope('sqlcontent', 'uml2fs', [IClass] , SqlContentScope)
 registerScope('sqlconcretetableinheritance', 'uml2fs',
               [IClass], SqlConcreteTableInheritanceScope)
@@ -124,6 +123,7 @@ def get_z3c_saconfig(source):
 def sqljoinedtablebaseclass(self, source, target):
     """preparation for joined table inheritance base class.
     """
+
     if source.stereotype('pyegg:stub'):
         return
 
@@ -319,6 +319,7 @@ def sqlrelations_collect(self, source, target):
     """Finds all associations, prepares them and adds them to the corrsponding
     classes.
     """
+
     detail = source.memberEnds[0]
     detailclass = detail.type
     master = source.memberEnds[1]
@@ -358,7 +359,9 @@ def calculate_joins(source, targetclass, otherclass, otherendname, nullable=Fals
     joins = []
     pks = get_pks(otherclass)
     my_pks=get_pks(source)
-
+    
+    if not pks:
+        raise ValueError,'class %s has no primary key defined' % targetclass.classname
     try:
         lastattr = targetclass.attributes()[-1]
     except IndexError:
@@ -612,6 +615,11 @@ def sqlassociationclasses(self, source, target):
             
         proxyname=end.name
         token(str(end.uuid),True,relname=relname,joins=joins)
+        
+        #XXX: if a sql_content class has 2 generalisation links to
+        #other sql_content classes (which makes no sense for sqlalchemy)
+        # targetklass_.attributes() leads to an
+        #infinite loop (some odict stuff)
         if not targetklass_.attributes(proxyname):
             code=templ % (relname, get_tablename(klass), source.name, end.name)
             targetklass_.insertafterlastattr(Attribute(proxyname, code))
