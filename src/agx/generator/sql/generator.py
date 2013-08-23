@@ -361,7 +361,7 @@ def calculate_joins(source, targetclass, otherclass, otherendname, nullable=Fals
     my_pks=get_pks(source)
     
     if not pks:
-        raise ValueError,'class %s has no primary key defined' % targetclass.classname
+        raise ValueError,'class %s has no primary key defined' % dotted_path(otherclass)
     try:
         lastattr = targetclass.attributes()[-1]
     except IndexError:
