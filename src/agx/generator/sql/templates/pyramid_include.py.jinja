@@ -1,0 +1,25 @@
+import transaction
+
+def {{db_attribute_name}}(request):
+    maker = request.registry.dbmaker
+    session = maker()
+
+    def cleanup(request):
+        transaction.commit()
+    request.add_finished_callback(cleanup)
+
+    return session
+
+def includeme(config):
+    import zope.component.event
+    from sqlalchemy.orm import sessionmaker
+    from zope import component
+    from zope.configuration.xmlconfig import XMLConfig
+    from z3c.saconfig.interfaces import IEngineFactory
+    from zope.sqlalchemy import ZopeTransactionExtension
+    import agx.testpackage.sql
+    engine_name='default'
+    XMLConfig('configure.zcml',agx.testpackage.sql)()
+    engine=component.getUtility(IEngineFactory,engine_name)()
+    config.registry.dbmaker = sessionmaker(bind=engine, extension=ZopeTransactionExtension())
+    config.add_request_method({{db_attribute_name}}, reify=True)

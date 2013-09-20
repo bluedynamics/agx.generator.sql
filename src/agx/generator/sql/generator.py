@@ -91,6 +91,8 @@ def get_pks(klass):
                 res = get_pks(inh.context)
                 if res:
                     return res
+
+    print 'pks:',klass.name,res
     return res
 
 
@@ -784,3 +786,29 @@ def sql_dependencies(self, source, target):
     setup = target.target['setup.py']
     setup.params['setup_dependencies'].append('sqlalchemy')
     setup.params['setup_dependencies'].append('z3c.saconfig')
+    
+@handler('pyramid_include', 'uml2fs', 'hierarchygenerator', 'sql_pyramid_include')
+def pyramid_include(self, source, target):
+    #creates a pyramid includeme hook if <<pyramid_include>> is applied on the root package
+    #egg=egg_source(source)
+    targetegg=read_target_node(source,target.target)
+    db_attribute_name='db'
+    
+    tgv=source.stereotype('sql:pyramid_include').taggedvalue('db_attribute_name')
+    if tgv:
+        db_attribute_name=tgv.value
+        
+    fname='pyramid_include.py'
+    if fname not in targetegg.keys():
+        templ=JinjaTemplate()
+        templ.template=templatepath('pyramid_include.py.jinja')
+        templ.params={
+                      'db_attribute_name':db_attribute_name}
+        targetegg[fname]=templ
+        
+    init=targetegg['__init__.py']
+    imps=Imports(init)
+    imps.set('pyramid_include','includeme')
+    
+    
+    
