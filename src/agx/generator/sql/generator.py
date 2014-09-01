@@ -92,7 +92,6 @@ def get_pks(klass):
                 if res:
                     return res
 
-    print 'pks:',klass.name,res
     return res
 
 
