@@ -622,7 +622,9 @@ def sqlassociationclasses(self, source, target):
         # targetklass_.attributes() leads to an
         #infinite loop (some odict stuff)
         if not targetklass_.attributes(proxyname):
-            code=templ % (relname, get_tablename(klass), source.name, end.name)
+            # attrname=get_tablename(klass) #old version
+            attrname=end.name
+            code=templ % (relname, attrname, source.name, end.name)
             targetklass_.insertafterlastattr(Attribute(proxyname, code))
     
     #import association_proxy
