@@ -320,7 +320,7 @@ def sqlrelations_collect(self, source, target):
     """Finds all associations, prepares them and adds them to the corrsponding
     classes.
     """
-
+    
     detail = source.memberEnds[0]
     detailclass = detail.type
     master = source.memberEnds[1]
@@ -339,18 +339,20 @@ def sqlrelations_collect(self, source, target):
         mastertok.outgoing_relations.append(master)
     elif detail.aggregationkind in ['composite','aggregation','shared'] or \
             IAssociationClass.providedBy(source):
-        #for aggregations the arrow points from the master to the detail
+        # for aggregations the arrow points from the master to the detail
         detailtok.incoming_relations.append(detail)
         mastertok.outgoing_relations.append(master)
     else:
-        #simple FK relation, so other direction
+        # simple FK relation, so other direction
+        # mark the relation to be generated as outgoing (because its no aggregation or composition)
+        master.generate_outgoing_relation=True
         mastertok.incoming_relations.append(master)
         
 def get_fkname(klass, pkname, otherendname, force_fullname=False):
     propnames=[p.name for p in klass.filtereditems(IProperty)]
     
-    #we have to look if the a prop with the same name is
-    #either defined locally or by an inherited pk
+    # we have to look if the a prop with the same name is
+    # either defined locally or by an inherited pk
     if force_fullname or pkname in propnames or pkname in [pk.name for pk in get_pks(klass)]:
         return '%s_%s' % (otherendname, pkname)
     else:
@@ -417,6 +419,7 @@ def calculate_joins(source, targetclass, otherclass, otherendname, nullable=Fals
         joins.append(joinstmt)
         return joins
 
+
 @handler('sqlrelations_foreignkeys', 'uml2fs', 'connectorgenerator',
          'sqlcontent', order=8)
 def sqlrelations_foreignkeys(self, source, target):
@@ -454,6 +457,7 @@ def sqlrelations_foreignkeys(self, source, target):
 
         joins=calculate_joins(source, targetclass, otherclass, otherend.name, nullable = nullable)
         token(str(otherend.uuid), True, joins=joins)
+
 
 
 @handler('sqlrelations_relations', 'uml2fs', 'semanticsgenerator',
@@ -581,6 +585,54 @@ def sqlrelations_relations(self, source, target):
 
             attr.value = "relationship('%s', %s)" % (
                 otherclass.name, ', '.join(oparray))
+
+    # now generate relations that are not aggregation or composite
+    # its not very elegant, but relations that are not aggregation or composite
+    # must be treated in inverse direction
+    incoming_relations = token(str(source.uuid),
+                               True, incoming_relations=[]).incoming_relations
+
+    for relend in incoming_relations:
+        if getattr(relend,'generate_outgoing_relation', None):
+            assoc = relend.association
+            if relend==relend.association.memberEnds[0]:
+                otherend = relend.association.memberEnds[1]
+            else:
+                otherend = relend.association.memberEnds[0]
+
+            klass = relend.type
+            otherclass = otherend.type
+            relname = otherend.name
+
+            if relname not in attrnames:
+                attr = Attribute()
+                attr.__name__ = str(attr.uuid)
+                if lastattr:
+                    targetclass.insertafter(attr, lastattr)
+                else:
+                    targetclass.insertfirst(attr)
+
+                attr.targets = [relname]
+                options = {}
+          
+                # make the primaryjoin stmt
+                tok = token(str(otherend.uuid), True, joins=[])
+                if tok.joins:
+                    options['primaryjoin'] = "'%s'" % ','.join(tok.joins)
+
+                if assoc.stereotype('sql:lazy'):
+                    laziness = tgv.direct('laziness', 'sql:lazy', 'dynamic')
+                    options['lazy'] = "'%s'" % laziness
+
+                #convert options into keyword params
+                oparray = []
+                for k in options:
+                    oparray.append('%s = %s' % (k, options[k]))
+
+                attr.value = "relationship('%s', %s)" % (
+                    otherclass.name, ', '.join(oparray))
+
+
 
 @handler('sqlassociationclasses', 'uml2fs', 'connectorgenerator',
          'sqlassociationclass', order=8)
