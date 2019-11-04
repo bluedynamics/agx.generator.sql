@@ -348,7 +348,7 @@ def sqlrelations_collect(self, source, target):
         master.generate_outgoing_relation=True
         mastertok.incoming_relations.append(master)
         
-def get_fkname(klass, pkname, otherendname, force_fullname=False):
+def get_fkname(klass, pkname, otherendname, force_fullname=True):
     propnames=[p.name for p in klass.filtereditems(IProperty)]
     
     # we have to look if the a prop with the same name is
@@ -358,7 +358,7 @@ def get_fkname(klass, pkname, otherendname, force_fullname=False):
     else:
         return pkname
 
-def calculate_joins(source, targetclass, otherclass, otherendname, nullable=False, force_fullname=False):
+def calculate_joins(source, targetclass, otherclass, otherendname, nullable=False, force_fullname=True):
     joins = []
     pks = get_pks(otherclass)
     my_pks=get_pks(source)
