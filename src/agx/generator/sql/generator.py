@@ -11,6 +11,9 @@ from agx.core.util import (
     read_target_node,
     dotted_path,
 )
+
+from node.ext.uml.core import INFINITE
+
 from node.ext.uml.interfaces import (
     IOperation,
     IClass,
@@ -348,17 +351,24 @@ def sqlrelations_collect(self, source, target):
         master.generate_outgoing_relation=True
         mastertok.incoming_relations.append(master)
         
-def get_fkname(klass, pkname, otherendname, force_fullname=True):
+def get_fkname(klass, pkname, otherend, force_fullname=True):
     propnames=[p.name for p in klass.filtereditems(IProperty)]
     
     # we have to look if the a prop with the same name is
     # either defined locally or by an inherited pk
     if force_fullname or pkname in propnames or pkname in [pk.name for pk in get_pks(klass)]:
+        # for assoc classes there should no plural s in the foreign keys
+        # XXX: correctly parse uppervalue for association ends
+        if IAssociationClass.providedBy(klass) and otherend.uppervalue == INFINITE and otherend.name.endswith('s'):
+            otherendname = otherend.name[:-1]
+        else:
+            otherendname = otherend.name
+
         return '%s_%s' % (otherendname, pkname)
     else:
         return pkname
 
-def calculate_joins(source, targetclass, otherclass, otherendname, nullable=False, force_fullname=True):
+def calculate_joins(source, targetclass, otherclass, otherend, nullable=False, force_fullname=True):
     joins = []
     pks = get_pks(otherclass)
     my_pks=get_pks(source)
@@ -372,8 +382,7 @@ def calculate_joins(source, targetclass, otherclass, otherendname, nullable=Fals
 
     for pk in pks:
         pkname = get_colid(pk)
-        #import pdb;pdb.set_trace()
-        fkname = get_fkname(source, pkname, otherendname, force_fullname=force_fullname)
+        fkname = get_fkname(source, pkname, otherend, force_fullname=force_fullname)
         # this stmt will be attached to otherend in order to be used
         # for the join in the relationship stmt
         joinstmt = '%s.%s == %s.%s' % (
@@ -455,7 +464,7 @@ def sqlrelations_foreignkeys(self, source, target):
         
         nullable = not relend.aggregationkind=='composite'
 
-        joins=calculate_joins(source, targetclass, otherclass, otherend.name, nullable = nullable)
+        joins=calculate_joins(source, targetclass, otherclass, otherend, nullable = nullable)
         token(str(otherend.uuid), True, joins=joins)
 
 
@@ -654,8 +663,8 @@ def sqlassociationclasses(self, source, target):
         return
     
     #generate the foreign key properties
-    joins0=calculate_joins(source, targetclass, klass0, end0.name, nullable = False, force_fullname=True)
-    joins1=calculate_joins(source, targetclass, klass1, end1.name, nullable = False, force_fullname=True)
+    joins0=calculate_joins(source, targetclass, klass0, end0, nullable = False, force_fullname=True)
+    joins1=calculate_joins(source, targetclass, klass1, end1, nullable = False, force_fullname=True)
 
     #generate the association_proxy attributes
     templ='''association_proxy("%s", "%s", 
@@ -682,7 +691,6 @@ def sqlassociationclasses(self, source, target):
     #import association_proxy
     imps=Imports(module)
     imps.set('sqlalchemy.ext.associationproxy','association_proxy')
-#    import pdb;pdb.set_trace()
     
 
     
