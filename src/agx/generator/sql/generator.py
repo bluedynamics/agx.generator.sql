@@ -75,6 +75,12 @@ registerScope('sql_config', 'uml2fs', [IPackage] , SqlSAConfigScope)
 registerScope('sqlassociation', 'uml2fs', [IAssociation], Scope)
 registerScope('sqlassociationclass', 'uml2fs', [IAssociationClass], Scope)
 
+FOREIGN_KEY = """ForeignKey('%s.%s', name="%s", deferrable=True)"""
+
+def foreign_key_stmt(detail, master, pkname, deferred=True, name=None):
+    if not name:
+        name = "fk_%s_%s" % (detail, master)
+    return FOREIGN_KEY % (master, pkname, name)
 
 def templatepath(name):
     return os.path.join(os.path.dirname(__file__), 'templates/%s' % name)
@@ -241,7 +247,7 @@ def sqlcontentclass(self, source, target):
         if pk.type.stereotype('sql:sql_type'):
             tgv = TaggedValues(pk.type)
             typename = tgv.direct('classname', 'sql:sql_type', typename)
-        fk = "ForeignKey('%s.%s')" % (get_tablename(parent), pkname)
+        fk = foreign_key_stmt(get_tablename(source), get_tablename(parent), pkname)
         pfkstmt = "Column(%s, %s,primary_key = True)" % (typename, fk)
         if not [a for a in classatts if a.targets == [pfkname]]:
             pfk = Attribute([pfkname], pfkstmt)
@@ -396,7 +402,7 @@ def calculate_joins(source, targetclass, otherclass, otherend, nullable=False, f
                 targetclass.insertfirst(attr)
 
             attr.targets = [fkname]
-            fk = "ForeignKey('%s.%s')" % (
+            fk = foreign_key_stmt(get_tablename(source),
                 get_tablename(otherclass), pkname)
             options = {}
             typename = pk.type.name
